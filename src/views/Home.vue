@@ -16,8 +16,8 @@
 
           <b-table-column label="Action" width="160">
             <div class="buttons">
-              <b-button type="is-success" :disabled="props.row.status == 'up'">Start</b-button>
-              <b-button type="is-danger" :disabled="props.row.status == 'down'">Stop</b-button>
+              <b-button @click="startServer(props.row.id)" type="is-success" :disabled="props.row.status == 'up'">Start</b-button>
+              <b-button @click="stopServer(props.row.id)" type="is-danger" :disabled="props.row.status == 'down'">Stop</b-button>
             </div>
           </b-table-column>
           <b-table-column label="Status">
@@ -46,6 +46,44 @@ export default {
   methods:{
     viewServer(id) {
       this.$router.push('/server/' + id)
+    },
+    startServer(id) {
+      Axios.get(`http://localhost:8107/api/server/${id}/start`,{json:true}).then(() => {
+        this.$buefy.toast.open({
+            message: `Started server ${id}`,
+            type: 'is-success'
+        })
+      }).catch(err => {
+        this.$buefy.dialog.alert({
+            title: 'Error',
+            message: `<b>Something happened while managing server status</b><br>${err.message} `,
+            type: 'is-danger',
+            hasIcon: true,
+            icon: 'times-circle',
+            iconPack: 'fa',
+            ariaRole: 'alertdialog',
+            ariaModal: true
+        })
+      })
+    },
+    stopServer(id) {
+      Axios.get(`http://localhost:8107/api/server/${id}/stop`,{json:true}).then(() => {
+        this.$buefy.toast.open({
+            message: `Stopped server ${id}`,
+            type: 'is-success'
+        })
+      }).catch(err => {
+        this.$buefy.dialog.alert({
+            title: 'Error',
+            message: `<b>Something happened while managing server status</b><br>${err.message} `,
+            type: 'is-danger',
+            hasIcon: true,
+            icon: 'times-circle',
+            iconPack: 'fa',
+            ariaRole: 'alertdialog',
+            ariaModal: true
+        })
+      })
     },
     loadServers() {
       Axios.get('http://localhost:8107/api/server/list',{json:true}).then((r) => {
