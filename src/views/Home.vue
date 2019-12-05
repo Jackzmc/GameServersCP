@@ -6,7 +6,7 @@
           <b-table-column label="Access" width="40">
               <b-button tag="router-link" :to="'/server/' + props.row._id" type="is-info "><font-awesome-icon icon="arrow-circle-right" /></b-button>
           </b-table-column>
-          <b-table-column field="name" label="Server Name" >
+          <b-table-column field="name" label="Server Name" class="has-text-middle">
               <span class="is-capitalized">{{props.row.name}}</span>
           </b-table-column>
 
@@ -117,3 +117,13 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.b-table {
+  .table {
+    td {
+      vertical-align: middle;
+    }
+  }
+}
+</style>
