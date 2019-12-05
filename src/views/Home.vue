@@ -1,13 +1,13 @@
 <template>
 <div id="app">
   <div class="container">
-      <b-table :data="servers">
+      <b-table :data="servers" striped :loading="loading">
         <template slot-scope="props" >
           <b-table-column label="Access" width="40">
-              <b-button @click="viewServer(props.row.id)" type="is-info"><font-awesome-icon icon="arrow-circle-right" /></b-button>
+              <b-button tag="router-link" :to="'/server/' + props.row._id" type="is-info "><font-awesome-icon icon="arrow-circle-right" /></b-button>
           </b-table-column>
           <b-table-column field="name" label="Server Name" >
-              {{props.row.name}}
+              <span class="is-capitalized">{{props.row.name}}</span>
           </b-table-column>
 
           <b-table-column field="players" label="Players" width="20">
@@ -16,13 +16,20 @@
 
           <b-table-column label="Action" width="160">
             <div class="buttons">
-              <b-button @click="startServer(props.row.id)" type="is-success" :disabled="props.row.status == 'up'">Start</b-button>
-              <b-button @click="stopServer(props.row.id)" type="is-danger" :disabled="props.row.status == 'down'">Stop</b-button>
+              <b-button @click="startServer(props.row._id)" type="is-success" :disabled="props.row.status == 'up'">Start</b-button>
+              <b-button @click="stopServer(props.row._id)" type="is-danger" :disabled="props.row.status == 'down'">Stop</b-button>
             </div>
           </b-table-column>
-          <b-table-column label="Status">
-            Up 3 days
+          <b-table-column label="Status" field="uptime">
+            Up {{props.row.started | formatUptime}}
           </b-table-column>
+        </template>
+        <template slot="empty">
+            <section class="section">
+                <div class="content has-text-grey has-text-centered">
+                    <p>No servers found</p>
+                </div>
+            </section>
         </template>
       </b-table>
   </div>
@@ -35,7 +42,8 @@ export default {
   name: 'app',
   data() {
     return {
-      servers:[]
+      servers:[],
+      loading:true,
     }
   },
   components: {
@@ -48,7 +56,7 @@ export default {
       this.$router.push('/server/' + id)
     },
     startServer(id) {
-      Axios.get(`http://localhost:8107/api/server/${id}/start`,{json:true}).then(() => {
+      Axios.get(`${this.$apiURL}/server/${id}/start`,{json:true}).then(() => {
         this.$buefy.toast.open({
             message: `Started server ${id}`,
             type: 'is-success'
@@ -67,7 +75,7 @@ export default {
       })
     },
     stopServer(id) {
-      Axios.get(`http://localhost:8107/api/server/${id}/stop`,{json:true}).then(() => {
+      Axios.get(`${this.$apiURL}/server/${id}/stop`,{json:true}).then(() => {
         this.$buefy.toast.open({
             message: `Stopped server ${id}`,
             type: 'is-success'
@@ -86,9 +94,14 @@ export default {
       })
     },
     loadServers() {
-      Axios.get('http://localhost:8107/api/server/list',{json:true}).then((r) => {
+      this.loading = true;
+      Axios.get(`${this.$apiURL}/server/list`,{json:true}).then((r) => {
         this.servers = r.data.servers;
+        this.loading = false;
+
       }).catch(err => {
+        this.loading = false;
+
         this.$buefy.dialog.alert({
             title: 'Error',
             message: `<b>Something happened while fetching servers.</b><br>${err.message} `,
