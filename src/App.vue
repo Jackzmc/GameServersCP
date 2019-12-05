@@ -1,12 +1,24 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link>
+      <div id="logo"><h3 class="title is-3 is-inline">GameServer CP</h3></div>
+      <div class="nav-element">
+        <router-link to="/"><span v-html="home"></span></router-link>
+      </div>
     </div>
     <router-view/>
   </div>
 </template>
 
+<script>
+export default {
+  computed: {
+    home() {
+      return (this.$route.path == "/") ? "Home" : `Go Home`;
+    }
+  }  
+}
+</script>
 
 <style>
 #app {
@@ -19,14 +31,17 @@
 
 #nav {
   padding: 30px;
+  display: inline-block;
 }
 
 #nav a {
   font-weight: bold;
-  color: #2c3e50;
+  /*color: #2c3e50;*/
+  display: inline;
 }
 
 #nav a.router-link-exact-active {
   color: #42b983;
 }
+
 </style>
