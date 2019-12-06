@@ -3,6 +3,17 @@
     <b-field label="Control Panel Settings">
     </b-field>
     <hr>
+    <div>
+    <strong>Portforward Status: </strong>
+    <span v-if="reachable == 'unknown'">
+        <a @click="checkPFStatus()" >Check status</a>
+    </span>
+    <span v-if="reachable != 'unknown'">
+        <span v-if="reachable == 'error'" class="has-text-warning"></span>
+        <span v-else-if="reachable == true" class="has-text-success">Port is reachable</span>
+        <span v-else-if="!reachable" class="has-text-danger">Port is reachable</span>
+    </span>
+    </div><br>
     <b-collapse :open="false" class="card">
         <div
             slot="trigger"
@@ -54,6 +65,7 @@ import Axios from 'axios'
 export default {
     data() {
         return {
+            reachable:'unknown',
             server_properties:[],
             changes:{
                 server_properties:[]
@@ -80,6 +92,7 @@ export default {
                 ariaModal: true
             })
         })
+        
     },
     methods:{
         isChanged(key,table) {
@@ -111,6 +124,16 @@ export default {
         },
         saveField(table) {
             this.$buefy.toast.open("Feature not Implemented for " + table)
+        },
+        checkPFStatus() {
+            Axios.get(`${this.$apiURL}/server/${this.server._id}/portcheck`,{json:true}).then((r) => {
+                this.reachable = r.data.reachable
+            }).catch(() => {
+                this.$buefy.toast.open({
+                    message: 'Failed to check portforward status',
+                    type: 'is-danger'
+                })
+            })
         }
     }
 }
