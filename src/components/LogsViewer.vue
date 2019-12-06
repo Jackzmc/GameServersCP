@@ -13,6 +13,8 @@ export default {
     },
     props:{
         server:{}
+    },
+    mounted() {
     }
 }
 </script>

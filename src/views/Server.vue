@@ -36,8 +36,8 @@
   </div>
   <br>
   <div class="container">
-    <div class="box">
-      <component :is="current"></component>
+    <div class="box" v-if='current'>
+      <component :is="current" :server="server"></component>
     </div>
   </div>
   <br>
@@ -62,7 +62,7 @@ export default {
     return {
       server:{},
       loading:true,
-      current:'settings-manager'
+      current:null
     }
   },
   computed: {
