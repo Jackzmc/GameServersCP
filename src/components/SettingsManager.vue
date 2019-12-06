@@ -1,5 +1,8 @@
 <template>
 <div id="app">
+    <b-field label="Control Panel Settings">
+    </b-field>
+    <hr>
     <b-collapse :open="false" class="card">
         <div
             slot="trigger"

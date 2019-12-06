@@ -27,6 +27,7 @@
     <div class="box has-text-centered">
       <h5 class="title is-5">Management</h5>
       <div class="buttons centered">
+        <b-button @click="current = 'console'" type="is-large is-info"><font-awesome-icon icon="terminal" /> Console</b-button>
         <b-button @click="current = 'settings-manager'" type="is-large is-info"><font-awesome-icon icon="cogs" /> View Settings</b-button>
         <b-button @click="current = 'logs-viewer'" type="is-large is-info"><font-awesome-icon icon="list" /> View Logs</b-button>
         <b-button @click="current = 'backups-viewer'" type="is-large is-info"><font-awesome-icon icon="file-archive" /> View Backups</b-button>
@@ -56,7 +57,8 @@ export default {
   components: {
     'settings-manager': () => import("@/components/SettingsManager"),
     'logs-viewer': () => import("@/components/LogsViewer"),
-    'backups-viewer': () => import("@/components/BackupsViewer")
+    'backups-viewer': () => import("@/components/BackupsViewer"),
+    'console': () => import("@/components/Console")
   },
   data() {
     return {
