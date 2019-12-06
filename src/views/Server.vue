@@ -4,8 +4,11 @@
     <div  class="box">
       <div class="is-inline">
         <b-button tag="router-link" to="/" type="is-pulled-left is-rounded"><font-awesome-icon icon="long-arrow-alt-left" /> Back</b-button>
-        <div class="has-text-centered">
+        <b-button @click="info_shown = !info_shown" type="is-pulled-right is-rounded is-info"><font-awesome-icon icon="info" /> Info</b-button>
+        <div class="has-text-centered ">
           <h1 class="title is-capitalized is-3" >{{server.name}}</h1>
+          <h2 class="subtitle" v-if="server.ip&&server.port">{{server.ip||'localhost'}}:{{server.port||"25565"}}</h2>
+           <h2 class="subtitle" v-else>Unknown Host</h2>
         </div>
       </div>
       <hr>
@@ -21,7 +24,12 @@
 
 
         </b-taglist>
+        
       </div>
+      <br>
+        <b-collapse :open="info_shown">
+          <strong>Information</strong>
+        </b-collapse>
     </div>
 
     <div class="box has-text-centered">
@@ -64,7 +72,8 @@ export default {
     return {
       server:{},
       loading:true,
-      current:null
+      current:null,
+      info_shown:false
     }
   },
   computed: {
