@@ -22,14 +22,18 @@
             <div class="content">
                 <b-table :data="server_properties">
                     <template slot-scope="props" >
-                        <b-table-column field="key" label="Key" class="has-text-middle">
+                        <b-table-column sortable field="key" label="Key" class="has-text-middle" width="300">
                             <strong>{{props.row.key}}</strong>
                         </b-table-column>
                         <b-table-column field="value" label="Value">
-                            <span class="is-capitalized">{{props.row.value}}</span>
+                            <span v-if="isChanged(props.row.key,'server_properties')" class="has-text-danger">{{getChangedValue(props.row.key,'server_properties')}}</span>
+                            <span v-else>{{props.row.value}}</span>
                         </b-table-column>
-                        <b-table-column label="Action">
-                            <b-button @click="editField(props.row.key,props.row.value,'server_properties')" type="is-danger">Edit</b-button>
+                        <b-table-column label="Action" width="180">
+                            <div class="buttons">
+                            <b-button icon-left="pencil-alt" @click="editField(props.row.key,props.row.value,'server_properties')" type="is-danger">Edit</b-button>
+                            <b-button v-if="isChanged(props.row.key,'server_properties')" @click="resetField(props.row.key,props.row.value,'server_properties')" type="is-warning">Reset</b-button>
+                            </div>
                         </b-table-column>
                     </template>
                 </b-table>
@@ -37,9 +41,14 @@
             </div>
         </div>
     </b-collapse>
+    <!-- <b-modal :active="true" :width="200">
+        <div class="box">
+            <h5 class="title is-5">Editing <b>setting-name</b></h5>
+            <b-checkbox>Enable</b-checkbox>
+        </div>
+    </b-modal> -->
 </div>
 </template>
-
 <script>
 import Axios from 'axios'
 export default {
@@ -73,7 +82,18 @@ export default {
         })
     },
     methods:{
+        isChanged(key,table) {
+            return this.changes[table].find(v => v.key == key) != undefined
+        },
+        getChangedValue(key,table) {
+            return this.changes[table].find(v => v.key == key).value;
+        },
+        resetField(key,value,table) {
+            const index_changes = this.changes[table].findIndex(v => v.key == key);
+            this.changes[table].splice(index_changes,1)
+        },
         editField(key,value,table) {
+
             this.$buefy.dialog.prompt({
                 message: `Enter new value for <b>${key}</b>`,
                 inputAttrs: {
@@ -83,8 +103,8 @@ export default {
                 },
                 trapFocus: true,
                 onConfirm: (newValue) => {
-                    this[table].find(v => v.key == key).value = newValue
-                    this.changes[table].push({key,value:newValue})
+                    //this[table].find(v => v.key == key).value = newValue
+                    this.changes[table].push({key,value:newValue,previous:value})
 
                 }
             })

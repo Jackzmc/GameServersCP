@@ -7,10 +7,10 @@ import moment from 'moment';
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faArrowCircleRight, faTimesCircle, faLongArrowAltLeft, faCogs, faList, faFileArchive, faSave, faArrowUp, faTerminal, faInfo, faCaretRight} from '@fortawesome/free-solid-svg-icons'
+import { faArrowCircleRight, faTimesCircle, faLongArrowAltLeft, faCogs, faList, faFileArchive, faSave, faArrowUp, faTerminal, faInfo, faCaretRight, faPencilAlt} from '@fortawesome/free-solid-svg-icons'
 import router from './router'
 
-library.add(faArrowCircleRight, faTimesCircle, faLongArrowAltLeft, faCogs, faList, faFileArchive, faSave, faArrowUp, faTerminal, faInfo, faCaretRight);
+library.add(faArrowCircleRight, faTimesCircle, faLongArrowAltLeft, faCogs, faList, faFileArchive, faSave, faArrowUp, faTerminal, faInfo, faCaretRight, faPencilAlt);
 
 Vue.use(VueRouter)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
