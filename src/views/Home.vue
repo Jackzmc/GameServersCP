@@ -119,11 +119,7 @@ export default {
 </script>
 
 <style scoped>
-.b-table {
-  .table {
     td {
       vertical-align: middle;
     }
-  }
-}
 </style>

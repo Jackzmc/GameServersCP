@@ -24,12 +24,12 @@
       </div>
     </div>
 
-    <div class="box">
+    <div class="box has-text-centered">
       <h5 class="title is-5">Management</h5>
-      <div class="buttons">
-        <b-button type="is-large is-info"><font-awesome-icon icon="cogs" /> View Settings</b-button>
-        <b-button type="is-large is-info"><font-awesome-icon icon="list" /> View Logs</b-button>
-        <b-button type="is-large is-info"><font-awesome-icon icon="file-archive" /> View Backups</b-button>
+      <div class="buttons centered">
+        <b-button @click="current = 'settings-manager'" type="is-large is-info"><font-awesome-icon icon="cogs" /> View Settings</b-button>
+        <b-button @click="current = 'logs-viewer'" type="is-large is-info"><font-awesome-icon icon="list" /> View Logs</b-button>
+        <b-button @click="current = 'backups-viewer'" type="is-large is-info"><font-awesome-icon icon="file-archive" /> View Backups</b-button>
       </div>
     </div>
     
@@ -37,7 +37,7 @@
   <br>
   <div class="container">
     <div class="box">
-      <h6 class="title is-6">server.properties</h6>
+      <component :is="current"></component>
     </div>
   </div>
   <br>
@@ -53,10 +53,16 @@
 <script>
 import Axios from 'axios'
 export default {
+  components: {
+    'settings-manager': () => import("@/components/SettingsManager"),
+    'logs-viewer': () => import("@/components/LogsViewer"),
+    'backups-viewer': () => import("@/components/BackupsViewer")
+  },
   data() {
     return {
       server:{},
-      loading:true
+      loading:true,
+      current:'settings-manager'
     }
   },
   computed: {
