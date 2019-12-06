@@ -20,7 +20,7 @@
                 <b-table :data="server_properties">
                     <template slot-scope="props" >
                         <b-table-column field="key" label="Key" class="has-text-middle">
-                            <span class="is-capitalized">{{props.row.key}}</span>
+                            <strong>{{props.row.key}}</strong>
                         </b-table-column>
                         <b-table-column field="value" label="Value">
                             <span class="is-capitalized">{{props.row.value}}</span>
@@ -30,6 +30,7 @@
                         </b-table-column>
                     </template>
                 </b-table>
+                <b-button @click="saveField('server_properties')" :disabled="changes.server_properties.length == 0" type="is-primary" size="is-medium"><font-awesome-icon icon="save" /> Save</b-button>
             </div>
         </div>
     </b-collapse>
@@ -41,7 +42,10 @@ import Axios from 'axios'
 export default {
     data() {
         return {
-            server_properties:[]
+            server_properties:[],
+            changes:{
+                server_properties:[]
+            }
         }
     },
     props: ['server'],
@@ -66,7 +70,7 @@ export default {
         })
     },
     methods:{
-        editField(key,value) {
+        editField(key,value,table) {
             this.$buefy.dialog.prompt({
                 message: `Enter new value for <b>${key}</b>`,
                 inputAttrs: {
@@ -75,9 +79,22 @@ export default {
                     value
                 },
                 trapFocus: true,
-                onConfirm: () => this.$buefy.toast.open(`Feature not implemented`)
+                onConfirm: (newValue) => {
+                    this[table].find(v => v.key == key).value = newValue
+                    this.changes[table].push({key,value:newValue})
+
+                }
             })
+        },
+        saveField(table) {
+            this.$buefy.toast.open("Feature not Implemented for " + table)
         }
     }
 }
 </script>
+
+<style scoped>
+td {
+    vertical-align: middle !important;
+}
+</style>
