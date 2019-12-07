@@ -1,6 +1,15 @@
 # gameservercp
 
+**NOTE**: In development
+
+A control panel to allow others to manage gameservers, including minecraft and any source games. 
+Currently features:
+* In development
+* 
+
 ## Project setup
+Currently this requires a separate gameserver-api project to run the API, which is hardcoded at this time. 
+
 ```
 yarn install
 ```
