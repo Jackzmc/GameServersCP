@@ -7,10 +7,10 @@ import moment from 'moment';
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faDownload, faSearch, faTrash, faArrowCircleRight, faTimesCircle, faLongArrowAltLeft, faCogs, faList, faFileArchive, faSave, faArrowUp, faTerminal, faInfo, faCaretRight, faPencilAlt, faAngleUp, faAngleDown, faTag} from '@fortawesome/free-solid-svg-icons'
+import { faDownload, faEye, faSearch, faTrash, faArrowCircleRight, faTimesCircle, faLongArrowAltLeft, faCogs, faList, faFileArchive, faSave, faArrowUp, faTerminal, faInfo, faCaretRight, faPencilAlt, faAngleUp, faAngleDown, faTag} from '@fortawesome/free-solid-svg-icons'
 import router from './router'
 
-library.add(faDownload, faSearch, faTrash, faArrowCircleRight, faTimesCircle, faLongArrowAltLeft, faCogs, faList, faFileArchive, faSave, faArrowUp, faTerminal, faInfo, faCaretRight, faPencilAlt, faAngleUp, faAngleDown, faTag);
+library.add(faDownload, faEye, faSearch, faTrash, faArrowCircleRight, faTimesCircle, faLongArrowAltLeft, faCogs, faList, faFileArchive, faSave, faArrowUp, faTerminal, faInfo, faCaretRight, faPencilAlt, faAngleUp, faAngleDown, faTag);
 
 Vue.use(VueRouter)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
@@ -22,6 +22,11 @@ Vue.prototype.$apiURL = process.env.VUE_APP_API_URL
 Vue.filter('formatDate', function(value) {
   if (value) {
     return moment(String(value)).format('YYYY/MM/DD [at] hh:mm')
+  }
+})
+Vue.filter('formatDateSimple', function(value) {
+  if (value) {
+    return moment(String(value)).format('YYYY/MM/DD')
   }
 })
 Vue.filter('formatUptime', function(value) {
