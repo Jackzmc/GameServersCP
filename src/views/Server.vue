@@ -51,7 +51,7 @@
       <component :is="current" :server="server"></component>
     </div>
   </div>
-  <br>
+  <br v-if='current'>
   <div class="centered">
     <b-taglist>
         <b-tag><strong>ID: </strong>{{$route.params.sid}}</b-tag>

@@ -1,7 +1,28 @@
 <template>
 <div id="app">
-    <b-field label="Control Panel Settings">
+    <h4 class="title is-4">Control Panel Settings</h4>
+    <b-field label="Server Tags">
+        <b-taginput
+            v-model="server.tags"
+            ellipsis
+            icon="tag"
+            type="is-dark"
+            placeholder="Add a tag">
+        </b-taginput>
     </b-field>
+    <span v-if="server.type == 'minecraft'">
+        <b-field label="Server Type">
+            <b-select v-model="server.jar" placeholder="Choose a server type">
+                <option value="vanilla">Vanilla</option>
+                <option value="spigot">Spigot</option>
+                <option value="paper">Paper</option>
+                <option value="sponge">Sponge</option>
+                
+            </b-select>
+        </b-field>
+    </span>
+    <br>
+    <b-button @click="saveField('general')" :disabled="changes.general.length == 0" type="is-primary" ><font-awesome-icon icon="save" /> Save Settings</b-button>
     <hr>
     <div>
     <strong>Portforward Status: </strong>
@@ -25,13 +46,13 @@
             </p>
             <a class="card-header-icon">
                 <b-icon
-                    :icon="props.open ? 'menu-down' : 'menu-up'">
+                    :icon="props.open ? 'angle-down':'angle-up'">
                 </b-icon>
             </a>
         </div>
         <div class="card-content">
             <div class="content">
-                <b-table :data="server_properties">
+                <b-table :data="server_properties" narrowed bordered striped class="is-marginless is-paddingless">
                     <template slot-scope="props" >
                         <b-table-column sortable field="key" label="Key" class="has-text-middle" width="300">
                             <strong>{{props.row.key}}</strong>
@@ -48,6 +69,7 @@
                         </b-table-column>
                     </template>
                 </b-table>
+                <br>
                 <b-button @click="saveField('server_properties')" :disabled="changes.server_properties.length == 0" type="is-primary" size="is-medium"><font-awesome-icon icon="save" /> Save</b-button>
             </div>
         </div>
@@ -67,7 +89,9 @@ export default {
         return {
             reachable:'unknown',
             server_properties:[],
+            general:[],
             changes:{
+                general:[],
                 server_properties:[]
             }
         }
@@ -114,6 +138,7 @@ export default {
                     maxlength: 200,
                     value
                 },
+                confirmText:"Change",
                 trapFocus: true,
                 onConfirm: (newValue) => {
                     //this[table].find(v => v.key == key).value = newValue
