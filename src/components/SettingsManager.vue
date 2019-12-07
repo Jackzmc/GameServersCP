@@ -26,16 +26,22 @@
     <hr>
     <div>
     <strong>Portforward Status: </strong>
-    <span v-if="reachable == 'unknown'">
-        <a @click="checkPFStatus()" >Check status</a>
+    <span v-if="server.ip != null">
+        <span v-if="reachable == 'unknown'">
+            <a @click="checkPFStatus()" >Check status</a>
+        </span>
+        <span v-if="reachable != 'unknown'">
+            <span v-if="reachable == 'error'" class="has-text-danger">Error ocurred while checking status.</span>
+            <span v-else-if="reachable == 'checking'">Checking...</span>
+            <span v-else-if="reachable == true" class="has-text-success">Port is reachable</span>
+            <span v-else-if="!reachable" class="has-text-danger">Port is reachable</span>
+        </span>
     </span>
-    <span v-if="reachable != 'unknown'">
-        <span v-if="reachable == 'error'" class="has-text-warning"></span>
-        <span v-else-if="reachable == true" class="has-text-success">Port is reachable</span>
-        <span v-else-if="!reachable" class="has-text-danger">Port is reachable</span>
+    <span v-else class="has-text-danger">
+        No IP has been set.
     </span>
     </div><br>
-    <b-collapse :open="false" class="card">
+    <b-collapse :open="false" class="card" v-if="server.type == 'minecraft'">
         <div
             slot="trigger"
             slot-scope="props"
@@ -100,10 +106,12 @@ export default {
     mounted() {
         console.info("Loading config...",`${this.$apiURL}/server/${this.server._id}/config`) //eslint-disable-line no-console
         Axios.get(`${this.$apiURL}/server/${this.server._id}/config`,{json:true}).then((r) => {
-            this.server_properties = Object.keys(r.data.server_properties).map(v => { 
-                return {
-                key:v,value:r.data.server_properties[v]}
-            })
+            if(this.server.type == "minecraft") {
+                this.server_properties = Object.keys(r.data.server_properties).map(v => { 
+                    return {
+                    key:v,value:r.data.server_properties[v]}
+                })
+            }
         }).catch(err => {
             this.$buefy.dialog.alert({
                 title: 'Error',
@@ -151,6 +159,7 @@ export default {
             this.$buefy.toast.open("Feature not Implemented for " + table)
         },
         checkPFStatus() {
+            this.reachable = "checking";
             Axios.get(`${this.$apiURL}/server/${this.server._id}/portcheck`,{json:true}).then((r) => {
                 this.reachable = r.data.reachable
             }).catch(() => {
