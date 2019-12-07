@@ -26,9 +26,11 @@
         </b-taglist>
         
       </div>
-      <br>
         <b-collapse :open="info_shown">
-          <strong>Information</strong>
+          <hr>
+          <div class="has-text-centered">
+            <strong>Information</strong>
+          </div>
         </b-collapse>
     </div>
 
