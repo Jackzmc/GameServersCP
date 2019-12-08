@@ -1,12 +1,6 @@
 <template>
 <div id="app">
 <h6 class="title is-6">Logs</h6>
-<article class="message is-warning">
-    <div class="message-body">
-        <strong>Notice</strong>
-        This component is not fully implemented.
-    </div>
-</article>
 <div class="columns">
     <b-loading :active="viewer.loading" :is-full-page="false" />
     <div class="column is-6">
@@ -18,7 +12,7 @@
             <b-table-column field="created" label="Created" class="has-text-middle" width="100">
                 {{props.row.created | formatDateSimple}}
             </b-table-column>
-            <b-table-column field="size" label="File Size" class="has-text-middle" width="100">
+            <b-table-column field="size" label="Size" class="has-text-middle" width="100">
                 {{props.row.size | humanizeSize}}
             </b-table-column>
             <b-table-column  label="Action" class="has-text-middle" width="350">
