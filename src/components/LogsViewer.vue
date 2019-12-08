@@ -4,7 +4,7 @@
 <article class="message is-warning">
     <div class="message-body">
         <strong>Notice</strong>
-        This component is not implemented.
+        This component is not fully implemented.
     </div>
 </article>
 <div class="columns">

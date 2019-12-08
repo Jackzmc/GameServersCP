@@ -18,6 +18,7 @@
         </div>
         <textarea :disabled="disabled"
                   :readonly="readonly"
+                  :id="id"
                   :placeholder="placeholder"
                   class="lined-textarea__content"
                   :class="{ 'lined-textarea__content--disabled': disabled,
@@ -52,6 +53,10 @@ export default {
         };
     },
     props: {
+        id: {
+            type:String,
+            default:""
+        },
         disabled: {
             type: Boolean,
             default: false
