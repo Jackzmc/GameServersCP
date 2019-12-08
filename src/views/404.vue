@@ -1,5 +1,5 @@
 <template>
-<div id="app">
+<div id="app" class="has-text-centered">
     <h1 class="title">404 Not Found</h1>
     <router-link to="/" class="button is-info">
     <span>Return Home</span>
@@ -7,3 +7,4 @@
     </router-link>
 </div>
 </template>
+
