@@ -20,9 +20,9 @@
     </b-table-column>
     <b-table-column  label="Action" class="has-text-middle" width="350">
       <div class="buttons">
-        <b-button icon-left="download">Download</b-button>
-        <b-button icon-left="search">Inspect</b-button>
-        <b-button icon-left="trash" type="is-danger">Delete</b-button>
+        <b-button @click="downloadBackup(props.row.name)" icon-left="download">Download</b-button>
+        <b-button @click="inspectBackup(props.row.name)" icon-left="search">Inspect</b-button>
+        <b-button @click="deleteBackup(props.row.name)" icon-left="trash" type="is-danger">Delete</b-button>
       </div>
     </b-table-column>
   </template>
@@ -54,6 +54,36 @@ export default {
             ariaModal: true
         })
     })
+  },
+  methods: {
+    deleteBackupConfirm(name) { //eslint-disable-line no-unused-vars
+        this.$buefy.toast.open({
+            message:'Sorry, feature not implemented.',
+            type:'is-danger'
+        })
+    },
+    deleteBackup(name) {
+      this.$buefy.dialog.confirm({
+          title: 'Delete Backup',
+          message: `Are you sure you want to delete <b>${name}</b>?`,
+          confirmText: 'Delete Backup',
+          type: 'is-danger',
+          hasIcon: true,
+          onConfirm: () => this.deleteBackupConfirm(name)
+      })
+    },
+    inspectBackup(name) { //eslint-disable-line no-unused-vars 
+      this.$buefy.toast.open({
+          message:'Sorry, feature not implemented.',
+          type:'is-danger'
+      })
+    },
+    downloadBackup(name) { //eslint-disable-line no-unused-vars
+      this.$buefy.toast.open({
+          message:'Sorry, feature not implemented.',
+          type:'is-danger'
+      })
+    }
   }
 }
 </script>
