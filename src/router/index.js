@@ -20,6 +20,12 @@ const routes = [
     component: () => import(/* webpackChunkName: "server" */ '../views/Server.vue')
   },
   {
+    path: '/create',
+    name: 'create',
+    props: true,
+    component: () => import(/* webpackChunkName: "create" */'../views/Create.vue')
+  },
+  {
     path: '*',
     component: () => import(/* webpackChunkName: "404" */ '../views/404.vue')
   }

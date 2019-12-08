@@ -31,6 +31,16 @@
                 </div>
             </section>
         </template>
+        <template slot="footer">
+            <b-field label="Enter ID or leave blank" horizontal>
+              <b-input placeholder="Enter a custom id or leave blank..." v-model="new_id"  />
+              <p class="control">
+                <b-button @click="startNewCreation" type="is-primary">Create New Server</b-button>
+              </p>
+            </b-field>
+
+          <!-- Your custom last row goes here -->
+        </template>
       </b-table>
   </div>
 </div>
@@ -38,11 +48,14 @@
 
 <script>
 import Axios from 'axios';
+import UUID from 'uuid/v4';
+
 export default {
   name: 'app',
   data() {
     return {
       servers:[],
+      new_id:null,
       loading:true,
     }
   },
@@ -52,6 +65,13 @@ export default {
     this.loadServers();
   },
   methods:{
+    startNewCreation() {
+      const uuid = UUID();
+      this.$router.push({
+        name:'create',
+        params:{id:this.new_id||uuid}
+      })
+    },
     viewServer(id) {
       this.$router.push('/server/' + id)
     },

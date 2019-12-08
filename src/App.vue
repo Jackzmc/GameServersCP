@@ -4,6 +4,7 @@
       <div id="logo"><h3 class="title is-3 is-inline">GameServer CP</h3></div>
       <div class="nav-element">
         <router-link to="/"><span v-html="home"></span></router-link>
+        <router-link to="/create">Create New Server</router-link>
       </div>
     </div>
     <router-view/>
@@ -35,6 +36,7 @@ export default {
 }
 
 #nav a {
+  padding-right:30px;
   font-weight: bold;
   /*color: #2c3e50;*/
   display: inline;
