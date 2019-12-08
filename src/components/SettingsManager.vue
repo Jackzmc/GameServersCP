@@ -1,6 +1,6 @@
 <template>
 <div id="app">
-    <h4 class="title is-4">Control Panel Settings</h4>
+    <h6 class="title is-6">Control Panel Settings</h6>
     <b-field label="Server Tags">
         <b-taginput
             v-model="server.tags"
