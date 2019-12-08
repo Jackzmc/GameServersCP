@@ -24,8 +24,8 @@
             <b-table-column  label="Action" class="has-text-middle" width="350">
             <div class="buttons">
                 <b-button @click="fetchLog(props.row.name)" icon-left="eye" type="is-primary">View</b-button>
-                <b-button icon-left="download">Download</b-button>
-                <b-button icon-left="trash" type="is-danger"></b-button>
+                <b-button @click="downloadLog(props.row.name)" icon-left="download">Download</b-button>
+                <b-button @click="deleteLog(props.row.name)" icon-left="trash" type="is-danger"></b-button>
             </div>
             </b-table-column>
         </template>
@@ -100,6 +100,25 @@ export default {
         jumpDown() {
             const el = document.getElementById("viewer");
             el.scrollTop = el.scrollHeight
+        },
+        deleteLogConfirmed(name) { //eslint-disable-line no-unused-vars
+            this.$buefy.toast.open({
+                message:'Sorry, feature not implemented.',
+                type:'is-danger'
+            })
+        },
+        deleteLog(name) {
+            this.$buefy.dialog.confirm({
+                title: 'Delete Log',
+                message: `Are you sure you want to delete <b>${name}</b>?`,
+                confirmText: 'Delete Log',
+                type: 'is-danger',
+                hasIcon: true,
+                onConfirm: () => this.deleteLogConfirmed(name)
+            })
+        },
+        downloadLog(name) {
+            window.open(`${this.$apiURL}/server/${this.server._id}/logs/${name}?download=1`)
         },
         fetchLog(name) {
             this.viewer.loading = true;
