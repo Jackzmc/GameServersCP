@@ -1,0 +1,19 @@
+{
+  "name": "gameservercp",
+  "version": "1.0.0",
+  "description": "**NOTE**: In development",
+  "main": "index.js",
+  "scripts": {
+    "start": "cd ui;npm run build && cd ../api; node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jackzmc/GameServersCP.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jackzmc/GameServersCP/issues"
+  },
+  "homepage": "https://github.com/Jackzmc/GameServersCP#readme"
+}
