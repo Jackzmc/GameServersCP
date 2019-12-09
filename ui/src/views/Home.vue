@@ -115,7 +115,7 @@ export default {
     },
     loadServers() {
       this.loading = true;
-      Axios.get(`${this.$apiURL}/server/list`,{json:true}).then((r) => {
+      Axios.get(`${this.$apiURL}/server`,{json:true}).then((r) => {
         this.servers = r.data.servers;
         this.loading = false;
 

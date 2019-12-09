@@ -24,7 +24,7 @@ const DEFAULT_PORTS = {minecraft: 25565, source: 27015}
 router.use('/:id/backups',require('./server/backups'))
 
 
-router.get('/list',async(req,res) => {
+router.get('/',async(req,res) => {
     try {
         res.json({
             servers: await getDB().collection("servers").find({}).toArray()
