@@ -4,7 +4,7 @@ module.exports = router;
 const fs = require('fs').promises
 const readline = require('readline');
 const fsl = require('fs')
-const unzip = require('unzipper');
+
 const zlib = require('zlib')
 const propParser = require("properties-file");
 const isPortReachable = require('is-port-reachable');
@@ -21,6 +21,8 @@ const {ObjectId} = require('mongodb');
 // })
 
 const DEFAULT_PORTS = {minecraft: 25565, source: 27015}
+router.use('/:id/backups',require('./server/backups'))
+
 
 router.get('/list',async(req,res) => {
     try {
@@ -119,91 +121,6 @@ router.get('/:id/config',async(req,res) => {
     }
 })
 
-router.get('/:id/backups',async(req,res) => {
-    try {
-        try {
-            _id = new ObjectId(req.params.id)
-            const arr = await getDB().collection("servers").find(_id).toArray();
-            const server = arr.length > 0 ? arr[0] : {};
-            if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
-            try {
-                const files = await fs.readdir(path.join(server.path,"/backups"));
-                const backups = [];
-                for(const v in files) {
-                    const info = await fs.stat(path.join(server.path,"/backups/",files[v]))
-                    if(info.isFile()) {
-                        backups.push({
-                            name:files[v],
-                            size:info.size,
-                            created:info.birthtime
-                        })
-                    }
-                }
-
-                res.json(backups)
-            }catch(exc) {
-                res.status(500).json({
-                    resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
-                })
-                console.error('[Error]',req.path,exc.message)
-            }
-        }catch(ex) {
-            res.status(400).json({resource:req.path,error:"Invalid server id. Needs to be 12 string or 24 hex chars.",reason:"InvalidServerID"})
-        }
-    }catch(err) {
-        res.status(500).json({
-            resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
-        })
-        console.error('[Error]',req.path,err.message)
-    }
-})
-router.get('/:id/backups/:backup',async(req,res) => {
-    try {
-        try {
-            _id = new ObjectId(req.params.id)
-            const arr = await getDB().collection("servers").find(_id).toArray();
-            const server = arr.length > 0 ? arr[0] : {};
-            if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
-            try {
-                const rawStream = fsl.createReadStream(path.join(server.path,"/backups/",req.params.backup));
-                rawStream.on('error',(err) => {
-                    res.status(500).json({
-                        resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
-                    })
-                    console.error('[Error]',req.path,err.message)
-                })
-                if(req.query.download) {
-                    return rawStream.pipe(res);
-                }else{
-                    const contents = [];
-                    rawStream.pipe(unzip.Parse())
-                    .on('entry',(entry) => {
-                        contents.push({
-                            name:entry.path,
-                            type:entry.type,
-                            size:entry.vars.uncompressedSize
-                        })
-                        entry.autodrain();
-                    }).on('close',() => {
-                        res.json(contents)
-                    })
-                }
-            }catch(exc) {
-                res.status(500).json({
-                    resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
-                })
-                console.error('[Error]',req.path,exc.message)
-            }
-        }catch(ex) {
-            res.status(400).json({resource:req.path,error:"Invalid server id. Needs to be 12 string or 24 hex chars.",reason:"InvalidServerID"})
-        }
-    }catch(err) {
-        res.status(500).json({
-            resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
-        })
-        console.error('[Error]',req.path,err.message)
-    }
-})
 
 router.get('/:id/logs',async(req,res) => {
     try {
@@ -265,6 +182,33 @@ router.get('/:id/logs/:log',async(req,res) => {
                     res.json(buffer)
                 })
                 
+            }catch(exc) {
+                res.status(500).json({
+                    resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
+                })
+                console.error('[Error]',req.path,exc.message)
+            }
+        }catch(ex) {
+            res.status(400).json({resource:req.path,error:"Invalid server id. Needs to be 12 string or 24 hex chars.",reason:"InvalidServerID"})
+        }
+    }catch(err) {
+        res.status(500).json({
+            resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
+        })
+        console.error('[Error]',req.path,err.message)
+    }
+})
+
+router.delete('/:id/logs/:log',async(req,res) => {
+    try {
+        try {
+            _id = new ObjectId(req.params.id)
+            const arr = await getDB().collection("servers").find(_id).toArray();
+            const server = arr.length > 0 ? arr[0] : {};
+            if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
+            try {
+                await fs.unlink(path.join(server.path,"/logs/",req.params.logs))
+                res.json({success:true})
             }catch(exc) {
                 res.status(500).json({
                     resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
