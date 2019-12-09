@@ -4,7 +4,8 @@
 <div class="columns">
     <b-loading :active="viewer.loading" :is-full-page="false" />
     <div class="column is-6">
-    <b-table :data="logs">
+    <b-button @click="getLogs" type="is-info" icon-left="sync" expanded>Refresh</b-button>
+    <b-table :data="logs" :loading="list_loading">
         <template slot-scope="props" >
             <b-table-column field="name" label="Name">
             {{props.row.name}}
@@ -41,6 +42,7 @@
             :nowrap="false"
             v-model="text"
         ></lined-textarea>
+        <br>
     </div>
 </div>
 </div>
@@ -56,6 +58,7 @@ export default {
                 lines:[],
                 loading:false
             },
+            list_loading: true,
             logs:[]
         }
     },
@@ -71,22 +74,28 @@ export default {
         server:{}
     },
     mounted() {
-        Axios.get(`${this.$apiURL}/server/${this.server._id}/logs`,{json:true}).then((r) => {
-            this.logs = r.data;
-        }).catch(err => {
-            this.$buefy.dialog.alert({
-                title: 'Error',
-                message: `<b>Something happened while fetching logs.</b><br>${err.message} `,
-                type: 'is-danger',
-                hasIcon: true,
-                icon: 'times-circle',
-                iconPack: 'fa',
-                ariaRole: 'alertdialog',
-                ariaModal: true
-            })
-        })
+        this.getLogs();
     },
     methods:{
+        getLogs() {
+            this.list_loading = true;
+            Axios.get(`${this.$apiURL}/server/${this.server._id}/logs`,{json:true}).then((r) => {
+                this.logs = r.data;
+                this.list_loading = false;
+            }).catch(err => {
+                this.list_loading = false;
+                this.$buefy.dialog.alert({
+                    title: 'Error',
+                    message: `<b>Something happened while fetching logs.</b><br>${err.message} `,
+                    type: 'is-danger',
+                    hasIcon: true,
+                    icon: 'times-circle',
+                    iconPack: 'fa',
+                    ariaRole: 'alertdialog',
+                    ariaModal: true
+                })
+            })
+        },
         jumpUp() {
             const el = document.getElementById("viewer");
             el.scrollTop = 0

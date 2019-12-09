@@ -1,7 +1,12 @@
 <template>
 <div id="app">
 <h6 class="title is-6">Backups</h6>
-<b-table :data="backups">
+<div class="buttons">
+  <b-button :loading="new_backup_loading" @click="startBackup" type="is-primary" icon-left="file-archive">Start backup</b-button>
+  <b-button @click="getBackups" type="is-info" icon-left="sync">Refresh</b-button>
+</div>
+
+<b-table :data="backups" :loading="backups_loading">
   <template slot-scope="props" >
     <b-table-column label="Name">
       {{props.row.name}}
@@ -53,27 +58,54 @@ export default {
         file:null,
         files:[]
       },
+      new_backup_loading:false,
+      backups_loading:true,
       backups:[]
     }
   },
   props:['server'],
   mounted() {
-    Axios.get(`${this.$apiURL}/server/${this.server._id}/backups`,{json:true}).then((r) => {
-        this.backups = r.data;
-    }).catch(err => {
-        this.$buefy.dialog.alert({
-            title: 'Error',
-            message: `<b>Something happened while fetching backups.</b><br>${err.message} `,
-            type: 'is-danger',
-            hasIcon: true,
-            icon: 'times-circle',
-            iconPack: 'fa',
-            ariaRole: 'alertdialog',
-            ariaModal: true
-        })
-    })
+    this.getBackups();
   },
   methods: {
+    startBackup() {
+      this.new_backup_loading = true;
+      Axios.get(`${this.$apiURL}/server/${this.server._id}/backups/start`,{json:true}).then((r) => {
+          this.new_backup_loading = false
+          this.backups = r.data;
+      }).catch(err => {
+          this.new_backup_loading = false
+          this.$buefy.dialog.alert({
+              title: 'Error',
+              message: `<b>Something happened while starting a new backup. </b><br>${err.message} `,
+              type: 'is-danger',
+              hasIcon: true,
+              icon: 'times-circle',
+              iconPack: 'fa',
+              ariaRole: 'alertdialog',
+              ariaModal: true
+          })
+      })
+    },
+    getBackups() {
+      this.backups_loading = true
+      Axios.get(`${this.$apiURL}/server/${this.server._id}/backups`,{json:true}).then((r) => {
+          this.backups_loading = false
+          this.backups = r.data;
+      }).catch(err => {
+          this.backups_loading = false
+          this.$buefy.dialog.alert({
+              title: 'Error',
+              message: `<b>Something happened while fetching backups.</b><br>${err.message} `,
+              type: 'is-danger',
+              hasIcon: true,
+              icon: 'times-circle',
+              iconPack: 'fa',
+              ariaRole: 'alertdialog',
+              ariaModal: true
+          })
+      })
+    },
     deleteBackupConfirm(name) { //eslint-disable-line no-unused-vars
         this.$buefy.toast.open({
             message:'Sorry, feature not implemented.',
