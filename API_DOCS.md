@@ -30,7 +30,7 @@
 
 `GET /server/create`
 
-`PUT /server/:server/config/:section` [not implemented] - modify section's values
+`PATCH /server/:server/config/:section` [not implemented] - modify section's values
 
 
 NOTE: apis are not unified in response... yet?
