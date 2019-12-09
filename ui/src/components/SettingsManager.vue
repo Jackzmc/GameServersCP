@@ -3,7 +3,7 @@
     <h6 class="title is-6">Control Panel Settings</h6>
     <b-field label="Server Tags">
         <b-taginput
-            v-model="server.tags"
+            v-model="changes.settings.tags"
             ellipsis
             icon="tag"
             type="is-dark"
@@ -12,7 +12,7 @@
     </b-field>
     <span v-if="server.type == 'minecraft'">
         <b-field label="Server Type">
-            <b-select v-model="server.jar" placeholder="Choose a server type">
+            <b-select v-model="changes.settings.jar" placeholder="Choose a server type">
                 <option value="vanilla">Vanilla</option>
                 <option value="spigot">Spigot</option>
                 <option value="paper">Paper</option>
@@ -22,7 +22,7 @@
         </b-field>
     </span>
     <br>
-    <b-button @click="saveField('general')" :disabled="changes.general.length == 0" type="is-primary" ><font-awesome-icon icon="save" /> Save Settings</b-button>
+    <b-button @click="saveField('settings')" :disabled="!hasSettingsChanged" type="is-primary" ><font-awesome-icon icon="save" /> Save Settings</b-button>
     <hr>
     <div>
     <strong>Portforward Status: </strong>
@@ -95,15 +95,31 @@ export default {
         return {
             reachable:'unknown',
             server_properties:[],
-            general:[],
+            settings:{},
             changes:{
-                general:[],
+                settings:{},
                 server_properties:[]
             }
         }
     },
+    computed:{
+        hasSettingsChanged() {
+            if(this.changes.settings.jar != this.settings.jar) return true;
+            if(this.changes.settings.tags != this.settings.tags) return true;
+            return false;
+        }
+    },
     props: ['server'],
     mounted() {
+        //generate list of settings
+        this.settings = {
+            jar:this.server.jar,
+            tags:this.server.tags
+        }
+        //create copy to compare to original
+        this.changes.settings = Object.assign({},this.settings);
+
+        //load all the configs. should be moved to a method later
         console.info("Loading config...",`${this.$apiURL}/server/${this.server._id}/config`) //eslint-disable-line no-console
         Axios.get(`${this.$apiURL}/server/${this.server._id}/config`,{json:true}).then((r) => {
             if(this.server.type == "minecraft") {
@@ -156,7 +172,24 @@ export default {
             })
         },
         saveField(table) {
-            this.$buefy.toast.open("Feature not Implemented for " + table)
+            switch(table) {
+                case "settings": {
+                    Axios.patch(`${this.$apiURL}/server/${this.server._id}`,this.changes.settings).then(() => {
+                        this.$buefy.toast.open({
+                            message: 'Saved your settings successfully.',
+                            type: 'is-success'
+                        })
+                    }).catch(() => {
+                        this.$buefy.toast.open({
+                            message: 'Could not save the settings at this time.',
+                            type: 'is-danger'
+                        })
+                    })
+                    break;
+                }
+                default:
+                    this.$buefy.toast.open("Feature not Implemented for " + table)
+            }
         },
         checkPFStatus() {
             this.reachable = "checking";
