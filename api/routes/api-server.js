@@ -54,7 +54,45 @@ router.get('/:id',async(req,res) => {
         console.error('[Error]',req.path,err.message)
     }
 })
-router.get(':id/portcheck',async(req,res) => {
+const ACCEPTED_KEYS = ['tags','jar']
+router.patch('/:id/:key',async(req,res) => {
+    if((req.params.key)) {
+        if(!req.body.value) {
+            return res.status(400).json({error:"Invalid json. Requires a json object with value property."})
+        }
+        try {
+            
+            const _id = new ObjectId(req.params.id)
+            const server = await getDB().collection("servers").find({_id,[req.params.key]: {$exists: true, $ne:true}}).toArray();
+            if(ACCEPTED_KEYS.includes(req.params.key)) {
+                await getDB().collection("servers").updateOne({_id},{$set: {[req.params.key]: req.body.value}})
+                res.json({changed:1})
+            }else{
+                return res.status(400).json({
+                    error: "Key is not a valid key. See VALID_KEYS",
+                    VALID_KEYS:ACCEPTED_KEYS
+                })
+            }
+
+            /*
+            const arr = await getDB().collection("servers").find(_id).toArray();
+            const server = arr.length > 0 ? arr[0] : {}
+            if(server) {
+                
+                return res.json({exists:exists.length})
+            }
+            res.status(404).end();*/
+        }catch(ex) {
+            console.log(ex)
+            res.status(400).json({resource:req.path,error:"Invalid server id. Needs to be 12 string or 24 hex chars.",reason:"InvalidServerID"})
+        }
+    }else{
+        return res.status(400).json({
+            error:'Invalid JSON body.'
+        })
+    }
+})
+router.get('/:id/portcheck',async(req,res) => {
     try {
         try {
             _id = new ObjectId(req.params.id)
