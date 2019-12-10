@@ -105,7 +105,7 @@ export default {
     computed:{
         hasSettingsChanged() {
             if(this.changes.settings.jar != this.settings.jar) return true;
-            if(this.changes.settings.tags != this.settings.tags) return true;
+            if(!areArraysEqual(this.changes.settings.tags,this.settings.tags)) return true;
             return false;
         }
     },
@@ -117,7 +117,7 @@ export default {
             tags:this.server.tags
         }
         //create copy to compare to original
-        this.changes.settings = Object.assign({},this.settings);
+        this.changes.settings = JSON.parse(JSON.stringify(this.settings))
 
         //load all the configs. should be moved to a method later
         console.info("Loading config...",`${this.$apiURL}/server/${this.server._id}/config`) //eslint-disable-line no-console
@@ -203,6 +203,16 @@ export default {
             })
         }
     }
+}
+function areArraysEqual(arr1,arr2) {
+    console.log(arr1.length,arr2.length) //eslint-disable-line no-console
+    if(arr1.length != arr2.length) return false;
+    for(let i=0;i<arr1.length;i++) {
+        if(arr1[i] !== arr2[i]) {
+            return false;
+        }
+    }
+    return true;
 }
 </script>
 
