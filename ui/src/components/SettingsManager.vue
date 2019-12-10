@@ -58,7 +58,7 @@
         </div>
         <div class="card-content">
             <div class="content">
-                <b-table :data="server_properties" narrowed bordered striped class="is-marginless is-paddingless">
+                <b-table :data="server_properties" narrowedstriped class="is-marginless is-paddingless">
                     <template slot-scope="props" >
                         <b-table-column sortable field="key" label="Key" class="has-text-middle" width="300">
                             <strong>{{props.row.key}}</strong>
@@ -219,5 +219,8 @@ function areArraysEqual(arr1,arr2) {
 <style scoped>
 td {
     vertical-align: middle !important;
+}
+.card-content {
+    padding: 1em;
 }
 </style>
