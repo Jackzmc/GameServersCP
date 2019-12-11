@@ -4,7 +4,7 @@
 <div class="columns">
     <b-loading :active="viewer.loading" :is-full-page="false" />
     <div class="column is-6">
-    <b-button @click="getLogs" type="is-info" icon-left="sync" expanded>Refresh</b-button>
+    <b-button @click="getLogs" type="is-info" icon-left="sync" :loading="list_loading" expanded>Refresh</b-button>
     <b-table :data="logs" :loading="list_loading">
         <template slot-scope="props" >
             <b-table-column field="name" label="Name">

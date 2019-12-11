@@ -3,7 +3,7 @@
     <div id="nav">
       <div id="logo"><h3 class="title is-3 is-inline">GameServer CP</h3></div>
       <div class="nav-element">
-        <router-link to="/"><span v-html="home"></span></router-link>
+        <router-link to="/dashboard">Dashboard</router-link>
         <router-link to="/create">Create New Server</router-link>
       </div>
     </div>
@@ -14,9 +14,7 @@
 <script>
 export default {
   computed: {
-    home() {
-      return (this.$route.path == "/") ? "Home" : `Go Home`;
-    }
+
   }  
 }
 </script>

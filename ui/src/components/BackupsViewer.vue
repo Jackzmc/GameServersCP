@@ -3,7 +3,7 @@
 <h6 class="title is-6">Backups</h6>
 <div class="buttons">
   <b-button :loading="new_backup_loading" @click="startBackup" type="is-primary" icon-left="file-archive">Start backup</b-button>
-  <b-button @click="getBackups" type="is-info" icon-left="sync">Refresh</b-button>
+  <b-button @click="getBackups" type="is-info" icon-left="sync" :loading="backups_loading">Refresh</b-button>
 </div>
 
 <b-table :data="backups" :loading="backups_loading">
