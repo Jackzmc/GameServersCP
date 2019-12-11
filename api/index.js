@@ -5,6 +5,7 @@ const app = express();
 
 require('./modules/util').init(app);
 
+
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use('/api/',require('./routes/api'));
