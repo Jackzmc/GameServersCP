@@ -10,6 +10,10 @@
               <span class="is-capitalized">{{props.row.name}}</span>
           </b-table-column>
 
+          <b-table-column field="tags" label="Tags" width="160">
+              {{props.row.tags.join(", ")}}
+          </b-table-column>
+
           <b-table-column field="players" label="Players" width="20">
               {{props.row.players}} / {{props.row.players_max}}
           </b-table-column>

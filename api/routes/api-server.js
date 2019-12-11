@@ -27,7 +27,16 @@ router.use('/:id/backups',require('./server/backups'))
 router.get('/',async(req,res) => {
     try {
         res.json({
-            servers: await getDB().collection("servers").find({}).project({_id:1,name:1,players:1,players_max:1,type:1,status:1,started:1}).toArray()
+            servers: await getDB().collection("servers").find({}).project({
+                _id:1,
+                name:1,
+                players:1,
+                players_max:1,
+                type:1,
+                status:1,
+                started:1,
+                tags:1
+            }).toArray()
         })
     }catch(err) {
         res.status(500).json({
