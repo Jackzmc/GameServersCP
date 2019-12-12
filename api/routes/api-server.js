@@ -12,6 +12,7 @@ const path = require('path')
 
 const {getOne,getDB} = require('../modules/util')
 const {ObjectId} = require('mongodb');
+const procm = require('../modules/processManager');
 
 // router.get('/:server/start',(req,res) => {
 
@@ -268,3 +269,14 @@ router.delete('/:id/logs/:log',async(req,res) => {
         console.error('[Error]',req.path,err.message)
     }
 })
+
+
+/*procm.startServer("test",null)
+
+router.get('/test',(req,res) => {
+    const output = procm.sendCommand('test',req.body.input)
+    res.send(output)
+})
+router.post('/:id/command',(req,res) => {
+    
+})*/

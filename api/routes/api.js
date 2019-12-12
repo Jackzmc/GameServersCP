@@ -18,6 +18,7 @@ router.get('/docs',(req,res) => {
         res.status(500).json({resource:req.path,error:'Could not parse markdown',reason:'InternalServerError'})
     })
 })
+
 router.get('*',(req,res) => {
     res.status(404).json({resource:req.path,reason:'EndpointNotFound'})
 })
