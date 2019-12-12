@@ -5,7 +5,7 @@
         <b-input type="textarea" :loading="loading" readonly v-model="console" expanded custom-class="console"></b-input>
     </b-field>
     <b-field>
-        <b-input :disabled="loading" placeholder="Enter a command here" icon="caret-right" v-model="input" expanded />
+        <b-input :disabled="loading" placeholder="Enter a command here" icon="caret-right" v-model="input" expanded v-on:keyup.enter="sendCommand" />
     </b-field>
     <span v-if="loading">Waiting for server...</span>
     <hr>
@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import Axios from 'axios'
 export default {
     data() {
         return {
@@ -31,6 +32,21 @@ export default {
     },
     props:{
         server:{}
+    },
+    methods: {
+        sendCommand() {
+            Axios.post(`${this.$apiURL}/server/${this.server._id}/command`,(r) => {
+                this.$buefy.toast.open({
+                    type:'is-success',
+                    message:JSON.stringify(r.data)
+                })
+            }).catch(err => {
+                this.$buefy.toast.open({
+                    type:'is-danger',
+                    message:'Server returned ' + err.message
+                })
+            })
+        }
     },
     computed: {
         statusClass() {
