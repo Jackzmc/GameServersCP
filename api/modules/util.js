@@ -5,9 +5,10 @@ const MongoClient = require('mongodb').MongoClient;
 const {exec} = require('child_process')
 
 //const client = new MongoClient(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-let _db;
+let _db, io;
 
-function init(app) {
+function init(app,io) {
+    this.io = io;
     const PORT = process.env.WEB_PORT||8080;
     MongoClient.connect(process.env.MONGODB_URI,{ useUnifiedTopology: true }).then(database => {
         console.info('[mongodb] Ready.')
@@ -39,5 +40,5 @@ async function getOne(cursor) {
 function getDB() {
     return _db;
 }
-module.exports = {init, getOne, getDB, execShellCommand};
+module.exports = {init, getOne, getDB, execShellCommand, io};
 

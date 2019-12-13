@@ -2,8 +2,11 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+app.io = io;
 
-require('./modules/util').init(app);
+require('./modules/util').init(app,io);
 
 
 app.use(bodyParser.urlencoded({ extended: false }))

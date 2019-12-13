@@ -1,5 +1,14 @@
 const {spawn} = require('child_process')
 const servers = new Map();
+let io;
+
+
+function init(io) {
+    this.io = io;
+    io.on('connection',(socket) => {
+        console.info(`[socket] ${socket.id} connected`)
+    })
+}
 
 function sendCommand(serverName,command) {
     const proc = servers.get(serverName)
@@ -35,4 +44,4 @@ function startServer(name,startScript) {
     servers.set(name,proc);
 }
 
-module.exports = {sendCommand, startServer};
+module.exports = {sendCommand, startServer, init};

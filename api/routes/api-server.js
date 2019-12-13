@@ -10,9 +10,10 @@ const propParser = require("properties-file");
 const isPortReachable = require('is-port-reachable');
 const path = require('path')
 
-const {getOne,getDB} = require('../modules/util')
+const {getOne,getDB,io} = require('../modules/util')
 const {ObjectId} = require('mongodb');
 const procm = require('../modules/processManager');
+procm.init(io)
 
 // router.get('/:server/start',(req,res) => {
 

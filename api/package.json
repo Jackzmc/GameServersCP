@@ -8,6 +8,7 @@
     "marked": "^0.7.0",
     "mongodb": "^3.3.5",
     "properties-file": "^1.0.0",
+    "socket.io": "^2.3.0",
     "unzipper": "^0.10.5"
   },
   "devDependencies": {}
