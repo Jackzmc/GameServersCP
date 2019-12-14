@@ -42,7 +42,17 @@ export default {
     },
     methods: {
         sendCommand() {
-            this.$options.socket.emit('command',this.input);
+            if(this.input == null || this.input == "") return; //ignore if empty
+            this.$options.socket.emit('command',this.input,(ach) => {
+                //ach is server anowledgement 
+                console.log(ach) //eslint-disable-line
+                if(ach.error) {
+                    this.$buefy.toast.open({
+                        type:'is-danger',
+                        message:`Could not send command: ${ach.error}`
+                    })
+                } 
+            });
             this.input = null
             // Axios.post(`${this.$apiURL}/server/${this.server._id}/command`,(r) => {
             //     this.$buefy.toast.open({
@@ -58,12 +68,12 @@ export default {
         },
         startServer() {
             Axios.get(`${this.$apiURL}/server/${this.server._id}/start`,() => {
-                this.$buefy.toast({
+                this.$buefy.toast.open({
                     message:'Successfully started server',
                     type:'is-success'
                 })
             }).catch(() => {
-                this.$buefy.toast({
+                this.$buefy.toast.open({
                     message:'Failed to start server',
                     type:'is-danger'
                 })
@@ -71,12 +81,12 @@ export default {
         },
         stopServer() {
             Axios.get(`${this.$apiURL}/server/${this.server._id}/stop`,() => {
-                this.$buefy.toast({
+                this.$buefy.toast.open({
                     message:'Successfully stopped server',
                     type:'is-success'
                 })
             }).catch(() => {
-                this.$buefy.toast({
+                this.$buefy.toast.open({
                     message:'Failed to stop server',
                     type:'is-danger'
                 })

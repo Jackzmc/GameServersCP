@@ -11,13 +11,19 @@ function init(_io) {
             socket.join(id)
         })
         console.info(`[socket] ${socket.id} connected`)
-        socket.on('command',msg => {
-            console.log(`[socket] ${socket.id} cmd: `,msg)
+        socket.on('command',(msg, fn) => {
             const id = getLastID(socket.rooms)
             const proc = servers.get(id)
             console.log('map_keys',servers.keys())
-            if(!proc) return console.log('command when server offline'); //silent fail
-            proc.stdin.write(msg+"\n")
+            if(proc) {
+                proc.stdin.write(msg+"\n")
+                console.log(`[socket] ${socket.id} cmd: `,msg)
+                fn({success:true})
+            }else{
+                console.log('command when server offline');
+                return fn({error:'Server is offline'})
+
+            }
             
         })
     })
