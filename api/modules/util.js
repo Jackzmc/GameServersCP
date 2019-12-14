@@ -7,14 +7,14 @@ const {exec} = require('child_process')
 //const client = new MongoClient(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 let _db, io;
 
-function init(app,io) {
+function init(server,io) {
     this.io = io;
     const PORT = process.env.WEB_PORT||8080;
     MongoClient.connect(process.env.MONGODB_URI,{ useUnifiedTopology: true }).then(database => {
-        console.info('[mongodb] Ready.')
+        console.info('[mongodb] Connected')
         //const collection = client.db("gameservercp").collection("servers");
         _db = database.db("gameservercp")
-        app.listen(PORT,() => {
+        server.listen(PORT,() => {
             console.info('[server] Listening on :' + PORT)
         })
     }).catch(err => {

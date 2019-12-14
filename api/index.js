@@ -6,7 +6,8 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 app.io = io;
 
-require('./modules/util').init(app,io);
+require('./modules/fileManager').start();
+require('./modules/util').init(server,io);
 
 
 app.use(bodyParser.urlencoded({ extended: false }))

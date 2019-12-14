@@ -65,6 +65,29 @@ router.get('/:id',async(req,res) => {
         console.error('[Error]',req.path,err.message)
     }
 })
+router.get('/:id/start',async(req,res) => {
+    try {
+        try {
+            _id = new ObjectId(req.params.id)
+            const arr = await getDB().collection("servers").find(_id).toArray();
+            const server = arr.length > 0 ? arr[0] : {};
+            if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
+            procm.startServer(server).then(() => {
+                res.json({success:1})
+            }).catch(err => {
+                res.status(500).json({error:err.message})
+            })
+        }catch(ex) {
+            res.status(400).json({resource:req.path,error:"Invalid server id. Needs to be 12 string or 24 hex chars.",reason:"InvalidServerID"})
+        }
+    }catch(err) {
+        res.status(500).json({
+            resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
+        })
+        console.error('[Error]',req.path,err.message)
+    }
+    
+})
 router.patch('/:id/tags',async(req,res) => {
     if(req.body.tags && Array.isArray(req.body.tags)) {
         try {
