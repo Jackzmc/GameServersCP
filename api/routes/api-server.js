@@ -73,7 +73,7 @@ router.get('/:id/start',async(req,res) => {
             const server = arr.length > 0 ? arr[0] : {};
             if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
             procm.startServer(server).then(() => {
-                res.json({success:1})
+                res.end()
             }).catch(err => {
                 res.status(500).json({error:err.message})
             })

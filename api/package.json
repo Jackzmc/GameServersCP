@@ -11,5 +11,8 @@
     "socket.io": "^2.3.0",
     "unzipper": "^0.10.5"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "scripts":{
+    "debug":"nodemon --inspect index.js"
+  }
 }

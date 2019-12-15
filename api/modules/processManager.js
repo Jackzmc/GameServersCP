@@ -7,14 +7,14 @@ function init(_io) {
     io = _io
     _io.on('connection',(socket) => {
         socket.on('init',(id) => {
-            console.log(`${socket.id} join room -> ${id}`)
+            console.log(`[socket] ${socket.id} join room -> ${id}`)
             socket.join(id)
         })
         console.info(`[socket] ${socket.id} connected`)
         socket.on('command',(msg, fn) => {
             const id = getLastID(socket.rooms)
             const proc = servers.get(id)
-            console.log('map_keys',servers.keys())
+            console.log('[socket/command] map_keys',servers.keys())
             if(proc) {
                 proc.stdin.write(msg+"\n")
                 console.log(`[socket] ${socket.id} cmd: `,msg)
@@ -55,7 +55,7 @@ function sendCommand(serverName,command) {
 
 function startServer(server) {
     return new Promise(async(resolve,reject) => {
-        console.debug(`[debug] run ${server.type}`,server.mc)
+        console.debug(`[debug] run ${server.type}`,`"${server.path}"`,server.mc)
         if(server && Object.keys(server).length > 0) {
             let starter = "";
             let args = [];
@@ -65,22 +65,36 @@ function startServer(server) {
                 try {
                     await fileManager.manageJar(server.mc.version,server.mc.jar)
                     starter = 'java'
-                    args = [`-Xmx${server.mc.memory}M`,`-jar`,`server.jar`,`nogui`]
+                    args = [`-Xmx${server.mc.memory}M`,`-jar`,`spigot-1.13.2.jar`,`nogui`]
                 }catch(ex) {
                     reject(ex)
                 }
             }else{ 
                 reject(new Error('Invalid server type'))
             }
-            console.log("spawn: ",starter,args)
-            const process = spawn(starter,args,{cwd:server.path});
+            console.log("[debug] spawn: ",starter,args)
+            const process = spawn(starter,args,{cwd:server.path,detached:true});
+            process.on('exit',(code,signal) => {
+                console.log('[proc]','Server',server._id,'exited. Code:',code,' Signal:',signal)
+                servers.delete(server._id)
+            })
+            process.on('close',(code,signal) => {
+                console.log('[proc]','Server',server._id,'closed. Code:',code,' Signal:',signal)
+                servers.delete(server._id)
+            })
+            process.on('error',(err) => {
+                console.log('[proc/error]',err.message)
+                reject(err)
+            })
             process.stdout.on('data', (data) => {
+                console.log('[debug:out]',`[${server._id}]`,data.toString())
                 io.to(server._id).emit('out',data.toString())
             })
             process.stderr.on('data', (data) => {
+                console.log('[debug:err]',`[${server._id}]`,data.toString())
                 io.to(server._id).emit('err',data.toString())
             })
-            console.log('store',server._id,'success')
+            console.log('[debug]',server._id,'start success')
             servers.set(server._id.toString(),process);
             resolve();
         }else{
