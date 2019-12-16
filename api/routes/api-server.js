@@ -47,6 +47,13 @@ router.get('/',async(req,res) => {
         console.error('[Error]',req.path,err.message)
     }
 })
+router.get('/test/:type/:version',(req,res) => {
+    require('../modules/fileManager').checkJar(req.params.type,req.params.version).then(() => {
+        res.json({exists:true})
+    }).catch(err => {
+        res.json({exists:false})
+    })
+})
 router.get('/:id',async(req,res) => {
     try {
         try {
