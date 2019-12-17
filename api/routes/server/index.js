@@ -10,7 +10,7 @@ const propParser = require("properties-file");
 const isPortReachable = require('is-port-reachable');
 const path = require('path')
 
-const {getOne,getDB} = require('../modules/util')
+const {getOne,getDB} = require('../../modules/util')
 const {ObjectId} = require('mongodb');
 
 // router.get('/:server/start',(req,res) => {
@@ -21,7 +21,7 @@ const {ObjectId} = require('mongodb');
 // })
 
 const DEFAULT_PORTS = {minecraft: 25565, source: 27015}
-router.use('/:id/backups',require('./server/backups'))
+router.use('/:id/backups',require('./backups'))
 
 
 router.get('/',async(req,res) => {

@@ -7,7 +7,7 @@ const cors = require('cors')
 module.exports = router;
 router.use(cors())
 
-router.use('/server',require('./api-server'))
+router.use('/server',require('./server'))
 
 
 router.get('/docs',(req,res) => {
