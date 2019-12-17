@@ -4,7 +4,7 @@
       <b-table :data="servers" striped :loading="loading">
         <template slot-scope="props" >
           <b-table-column label="Access" width="40">
-              <b-button tag="router-link" :to="'/server/' + props.row._id" type="is-info "><font-awesome-icon icon="arrow-circle-right" /></b-button>
+              <b-button tag="router-link" :to="'/manage/server/' + props.row._id" type="is-info "><font-awesome-icon icon="arrow-circle-right" /></b-button>
           </b-table-column>
           <b-table-column field="name" label="Server Name" class="has-text-middle">
               <span class="is-capitalized">{{props.row.name}}</span>
@@ -77,7 +77,7 @@ export default {
       })
     },
     viewServer(id) {
-      this.$router.push('/server/' + id)
+      this.$router.push('/manage/server/' + id)
     },
     startServer(id) {
       Axios.get(`${this.$apiURL}/server/${id}/start`,{json:true}).then(() => {

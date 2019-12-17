@@ -5,7 +5,7 @@ const fsl = require('fs')
 const unzip = require('unzipper');
 module.exports = router;
 
-const {getOne,getDB} = require('../../modules/util')
+const {getOne,getDB,getDataDir} = require('../../modules/util')
 const {ObjectId} = require('mongodb');
 
 
@@ -17,10 +17,11 @@ router.get('/',async(req,res) => {
             const server = arr.length > 0 ? arr[0] : {};
             if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
             try {
-                const files = await fs.readdir(path.join(server.path,"/backups"));
+                //todo: fix bug
+                const files = await fs.readdir(path.join(getDataDir(),server._id,"/backups"));
                 const backups = [];
                 for(const v in files) {
-                    const info = await fs.stat(path.join(server.path,"/backups/",files[v]))
+                    const info = await fs.stat(path.join(getDataDir(),server._id,"/backups/",files[v]))
                     if(info.isFile()) {
                         backups.push({
                             name:files[v],
@@ -32,6 +33,7 @@ router.get('/',async(req,res) => {
 
                 res.json(backups)
             }catch(exc) {
+                if(exc.code === "ENOENT") return res.json([]);
                 res.status(500).json({
                     resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
                 })
@@ -58,7 +60,7 @@ router.get('/:backup',async(req,res) => {
             const server = arr.length > 0 ? arr[0] : {};
             if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
             try {
-                const rawStream = fsl.createReadStream(path.join(server.path,"/backups/",req.params.backup));
+                const rawStream = fsl.createReadStream(path.join(getDataDir(),server._id,"/backups/",req.params.backup));
                 rawStream.on('error',(err) => {
                     res.status(500).json({
                         resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
@@ -106,7 +108,7 @@ router.delete('/:backup',async(req,res) => {
             const server = arr.length > 0 ? arr[0] : {};
             if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
             try {
-                await fs.unlink(path.join(server.path,"/backups/",req.params.backup))
+                await fs.unlink(path.join(getDataDir(),server._id,"/backups/",req.params.backup))
                 res.json({success:true})
             }catch(exc) {
                 res.status(500).json({

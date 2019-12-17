@@ -25,6 +25,13 @@
       </div>
     </b-table-column>
   </template>
+  <template slot="empty">
+    <section class="section">
+        <div class="content has-text-grey has-text-centered">
+            <p>No backups were found</p>
+        </div>
+    </section>
+  </template>
 </b-table>
 <b-modal :active.sync="inspect.active">
   <div class="box">
@@ -40,6 +47,13 @@
         <b-table-column field="size" label="File Size" class="has-text-middle" width="100">
             {{props.row.size | humanizeSize}}
         </b-table-column>
+      </template>
+      <template slot="empty">
+        <section class="section">
+            <div class="content has-text-grey has-text-centered">
+                <p>No files were found</p>
+            </div>
+        </section>
       </template>
     </b-table>
   </div>

@@ -10,8 +10,11 @@ const propParser = require("properties-file");
 const isPortReachable = require('is-port-reachable');
 const path = require('path')
 
-const {getOne,getDB} = require('../../modules/util')
+const {getOne,getDB,io,getDataDir} = require('../modules/util')
 const {ObjectId} = require('mongodb');
+const procm = require('../modules/processManager');
+
+procm.init(io)
 
 // router.get('/:server/start',(req,res) => {
 
@@ -45,6 +48,16 @@ router.get('/',async(req,res) => {
         console.error('[Error]',req.path,err.message)
     }
 })
+router.get('/test/:type/:version',(req,res) => {
+    require('../modules/fileManager').checkJar(req.params.type,req.params.version).then(() => {
+        res.json({exists:true})
+    }).catch(err => {
+        res.json({exists:false})
+    })
+})
+router.get('/test2/',(req,res) => {
+    
+})
 router.get('/:id',async(req,res) => {
     try {
         try {
@@ -62,6 +75,29 @@ router.get('/:id',async(req,res) => {
         })
         console.error('[Error]',req.path,err.message)
     }
+})
+router.get('/:id/start',async(req,res) => {
+    try {
+        try {
+            _id = new ObjectId(req.params.id)
+            const arr = await getDB().collection("servers").find(_id).toArray();
+            const server = arr.length > 0 ? arr[0] : {};
+            if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
+            procm.startServer(server).then(() => {
+                res.end()
+            }).catch(err => {
+                res.status(500).json({error:err.message})
+            })
+        }catch(ex) {
+            res.status(400).json({resource:req.path,error:"Invalid server id. Needs to be 12 string or 24 hex chars.",reason:"InvalidServerID"})
+        }
+    }catch(err) {
+        res.status(500).json({
+            resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
+        })
+        console.error('[Error]',req.path,err.message)
+    }
+    
 })
 router.patch('/:id/tags',async(req,res) => {
     if(req.body.tags && Array.isArray(req.body.tags)) {
@@ -143,7 +179,7 @@ router.get('/:id/config',async(req,res) => {
             try {
                 let final_object = {}
                 if(server.type == "minecraft") {
-                    const server_prop = await fs.readFile(path.join(server.path,"/server.properties"),'utf-8');
+                    const server_prop = await fs.readFile(path.join(getDataDir(),server._id,"/server.properties"),'utf-8');
                     final_object['server_properties'] = propParser.parse(server_prop)
                 }
                 res.json(final_object)
@@ -173,24 +209,26 @@ router.get('/:id/logs',async(req,res) => {
             const server = arr.length > 0 ? arr[0] : {};
             if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
             try {
-                const files = await fs.readdir(path.join(server.path,"/logs"));
-                const backups = [];
+                const _path = path.join(getDataDir(),server._id.toString(),"/logs");
+                const files = await fs.readdir(_path);
+                const logs = [];
                 for(const v in files) {
-                    const info = await fs.stat(path.join(server.path,"/logs/",files[v]))
+                    const info = await fs.stat(path.join(getDataDir(),server._id,"/logs/",files[v]))
                     if(info.isFile()) {
-                        backups.push({
+                        logs.push({
                             name:files[v],
                             size:info.size,
                             created:info.birthtime
                         })
                     }
                 }
-                res.json(backups)
+                res.json(logs)
             }catch(exc) {
+                if(exc.code === "ENOENT") return res.json([]);
                 res.status(500).json({
                     resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
                 })
-                console.error('[Error]',req.path,exc.message)
+                console.error('[Error]',req.path,exc.stack)
             }
         }catch(ex) {
             res.status(400).json({resource:req.path,error:"Invalid server id. Needs to be 12 string or 24 hex chars.",reason:"InvalidServerID"})
@@ -210,7 +248,7 @@ router.get('/:id/logs/:log',async(req,res) => {
             const server = arr.length > 0 ? arr[0] : {};
             if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
             try {
-                const rawStream = fsl.createReadStream(path.join(server.path,"/logs",req.params.log));
+                const rawStream = fsl.createReadStream(path.join(getDataDir(),server._id,"/logs",req.params.log));
                 if(req.query.download) {
                     return rawStream.pipe(res);
                 }
@@ -250,7 +288,7 @@ router.delete('/:id/logs/:log',async(req,res) => {
             const server = arr.length > 0 ? arr[0] : {};
             if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
             try {
-                await fs.unlink(path.join(server.path,"/logs/",req.params.logs))
+                await fs.unlink(path.join(getDataDir(),server._id,"/logs/",req.params.logs))
                 res.json({success:true})
             }catch(exc) {
                 res.status(500).json({
@@ -268,3 +306,14 @@ router.delete('/:id/logs/:log',async(req,res) => {
         console.error('[Error]',req.path,err.message)
     }
 })
+
+
+/*procm.startServer("test",null)
+
+router.get('/test',(req,res) => {
+    const output = procm.sendCommand('test',req.body.input)
+    res.send(output)
+})
+router.post('/:id/command',(req,res) => {
+    
+})*/

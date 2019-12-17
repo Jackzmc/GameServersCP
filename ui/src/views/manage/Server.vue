@@ -3,7 +3,7 @@
   <div class="container">
     <div  class="box">
       <div class="is-inline">
-        <b-button tag="router-link" to="/" type="is-pulled-left is-rounded"><font-awesome-icon icon="long-arrow-alt-left" /> Back</b-button>
+        <b-button tag="router-link" to="/manage" type="is-pulled-left is-rounded"><font-awesome-icon icon="long-arrow-alt-left" /> Back</b-button>
         <b-button @click="info_shown = !info_shown" type="is-pulled-right is-rounded is-info"><font-awesome-icon icon="info" /> Info</b-button>
         <div class="has-text-centered ">
           <h1 class="title is-capitalized is-3" >{{server.name}}</h1>
@@ -31,7 +31,6 @@
           <div class="has-text-centered">
             <strong>Information</strong>
           </div>
-          <strong>Storage Path: </strong>{{server.path}}<br>
           <strong>Created: </strong>{{server.created}}
         </b-collapse>
     </div>

@@ -1,33 +1,33 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Dashboard from '../views/Dashboard.vue'
+import Dashboard from '../views/manage/Dashboard.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    redirect: '/dashboard'
+    path: '/manage',
+    redirect: '/manage/dashboard'
   },
   {
-    path: '/dashboard',
+    path: '/manage/dashboard',
     name: 'dashboard',
     component: Dashboard
   },
   {
-    path: '/server/:sid',
+    path: '/manage/server/:sid',
     name: 'serverdash',
     props: true,
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "server" */ '../views/Server.vue')
+    component: () => import(/* webpackChunkName: "server" */ '../views/manage/Server.vue')
   },
   {
-    path: '/create',
+    path: '/manage/create',
     name: 'create',
     props: true,
-    component: () => import(/* webpackChunkName: "create" */'../views/Create.vue')
+    component: () => import(/* webpackChunkName: "create" */'../views/manage/Create.vue')
   },
   {
     path: '*',

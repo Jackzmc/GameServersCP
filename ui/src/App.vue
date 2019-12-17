@@ -3,8 +3,8 @@
     <div id="nav">
       <div id="logo"><h3 class="title is-3 is-inline">GameServer CP</h3></div>
       <div class="nav-element">
-        <router-link to="/dashboard">Dashboard</router-link>
-        <router-link to="/create">Create New Server</router-link>
+        <router-link to="/manage/dashboard">Dashboard</router-link>
+        <router-link to="/manage/create">Create New Server</router-link>
       </div>
     </div>
     <router-view/>

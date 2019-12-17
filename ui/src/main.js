@@ -17,7 +17,8 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.use(Buefy, { defaultIconPack: 'fas', defaultIconComponent: 'font-awesome-icon' })
 
 Vue.config.productionTip = false
-Vue.prototype.$apiURL = process.env.VUE_APP_API_URL
+Vue.prototype.$apiURL = process.env.VUE_APP_API_URL;
+Vue.prototype.$socketURL = process.env.VUE_APP_SOCKET_URL;
 
 Vue.filter('formatDate', function(value) {
   if (value) {
