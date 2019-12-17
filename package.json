@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/Jackzmc/GameServersCP/issues"
   },
-  "homepage": "https://github.com/Jackzmc/GameServersCP#readme"
+  "homepage": "https://github.com/Jackzmc/GameServersCP#readme",
+  "dependencies": {
+    "mcversions": "^1.0.1"
+  }
 }

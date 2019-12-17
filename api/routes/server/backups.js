@@ -32,6 +32,7 @@ router.get('/',async(req,res) => {
 
                 res.json(backups)
             }catch(exc) {
+                if(exc.code === "ENOENT") return res.json([]);
                 res.status(500).json({
                     resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
                 })

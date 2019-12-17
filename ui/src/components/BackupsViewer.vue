@@ -41,6 +41,13 @@
             {{props.row.size | humanizeSize}}
         </b-table-column>
       </template>
+      <template slot="empty">
+        <section class="section">
+            <div class="content has-text-grey has-text-centered">
+                <p>No backups were found.</p>
+            </div>
+        </section>
+      </template>
     </b-table>
   </div>
 </b-modal>

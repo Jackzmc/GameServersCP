@@ -3,6 +3,7 @@ const marked = require('marked')
 const fs = require('fs').promises
 const path = require('path')
 const cors = require('cors')
+const mcversions = require('mcversions')
 
 module.exports = router;
 router.use(cors())
@@ -17,6 +18,44 @@ router.get('/docs',(req,res) => {
         console.log(err);
         res.status(500).json({resource:req.path,error:'Could not parse markdown',reason:'InternalServerError'})
     })
+})
+router.get('/versions',(req,res) => {
+    let latest = {}
+    mcversions.getLatestReleaseVersion(function (err, version) {
+        if (err) {
+            res.status(500).json({
+                resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
+            })
+            console.error('[Error]',req.path,err.message)
+        }else{
+            latest = version;
+        }
+    });
+    mcversions.getAllVersions(function (err, versions) {
+        if (err) {
+            res.status(500).json({
+                resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
+            })
+            console.error('[Error]',req.path,err.message)
+        }else{
+
+            res.json({
+                latest,
+                versions:versions.filter(v => v.type === 'release')
+            })
+        }
+    });
+})
+router.get('/versions/latest',(req,res) => {
+    mcversions.getLatestReleaseVersion(function (err, version) {
+        if (err) {
+            res.status(500).json({
+                resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
+            })
+            console.error('[Error]',req.path,err.message)
+        }
+        res.json(version)
+    });
 })
 
 router.get('*',(req,res) => {

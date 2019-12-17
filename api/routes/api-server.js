@@ -54,6 +54,9 @@ router.get('/test/:type/:version',(req,res) => {
         res.json({exists:false})
     })
 })
+router.get('/test2/',(req,res) => {
+    
+})
 router.get('/:id',async(req,res) => {
     try {
         try {
@@ -206,19 +209,20 @@ router.get('/:id/logs',async(req,res) => {
             if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
             try {
                 const files = await fs.readdir(path.join(server.path,"/logs"));
-                const backups = [];
+                const logs = [];
                 for(const v in files) {
                     const info = await fs.stat(path.join(server.path,"/logs/",files[v]))
                     if(info.isFile()) {
-                        backups.push({
+                        logs.push({
                             name:files[v],
                             size:info.size,
                             created:info.birthtime
                         })
                     }
                 }
-                res.json(backups)
+                res.json(logs)
             }catch(exc) {
+                if(exc.code === "ENOENT") return res.json([]);
                 res.status(500).json({
                     resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
                 })

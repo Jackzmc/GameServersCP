@@ -1,6 +1,7 @@
 <template>
 <div id="app" class="container">
     <h4 class="title is-4 has-text-centered">Create New Server</h4>
+    <!-- <b-loading :active="loading" /> -->
     <form>
         <b-field label="Enter ID (optional)" message="Must be a unique, single alphanumeric combination. Leave blank for a random UUID">
             <b-input v-model="id" placeholder="csgo" />
@@ -28,9 +29,9 @@
         </b-field>
         <b-field v-if="type == 'minecraft'" label="Version">
             <b-field>
-                <b-select v-model="version" placeholder="Choose a version">
-                    <option value="latest">Latest</option>
-                    <option v-for="(name) in versions" :key="name" :value="name">{{name}}</option>
+                <b-select v-model="version" placeholder="Choose a version" :loading="loading">
+                    <option :value="latest_version">Latest ({{latest_version}})</option>
+                    <option v-for="(version) in versions" :key="version.id" :value="version.id">{{version.id}}</option>
                 </b-select>
             </b-field>
         </b-field>
@@ -56,12 +57,21 @@ export default {
     JARS: ['vanilla','spigot','sponge','paper'],
     data() {
         return {
+            loading:false,
             versions:[],
+            latest_version:null,
             title:null,
-            type:'',
-            version:"latest",
+            type:null,
+            version:null,
             jar:0,
             appid:null
+        }
+    },
+    watch:{
+        type(newType) {
+            if(newType === 'minecraft' && this.versions.length === 0) {
+                this.getVersions();
+            }
         }
     },
     computed:{
@@ -101,6 +111,27 @@ export default {
                 })
             })
 
+        },
+        getVersions() {
+            this.loading = true;
+            Axios.get(`${this.$apiURL}/versions`).then(r => {
+                this.versions = r.data.versions;
+                this.latest_version = r.data.latest.id;
+                this.loading = false;
+                this.version = this.latest_version;
+            }).catch(err => {
+                this.loading = false;
+                this.$buefy.dialog.alert({
+                    title: 'Error',
+                    message: `<b>Could not fetch the latest versions at this time.</b><br>${err.message} `,
+                    type: 'is-danger',
+                    hasIcon: true,
+                    icon: 'times-circle',
+                    iconPack: 'fa',
+                    ariaRole: 'alertdialog',
+                    ariaModal: true
+                })
+            })
         }
     },
     props:['id']
