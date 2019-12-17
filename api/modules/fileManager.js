@@ -4,11 +4,6 @@ const semver_reg = new RegExp(/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-(0|[1-
 
 
 exports.start = async() => {
-    if(!process.env.ROOT_SERVER_DIR) {
-        fs.mkdir(path.join(__dirname,'../../servers'))
-        .then(() => console.log('[fileManager] Created servers/ directory. Change with env ROOT_SERVER_DIR'))
-        .catch(() => {})
-    }
     fs.mkdir(path.join(__dirname,'../../data')).catch(() => {})
 }
 function downloadJar(type,version) {

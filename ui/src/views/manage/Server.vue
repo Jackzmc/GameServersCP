@@ -31,7 +31,6 @@
           <div class="has-text-centered">
             <strong>Information</strong>
           </div>
-          <strong>Storage Path: </strong>{{server.path}}<br>
           <strong>Created: </strong>{{server.created}}
         </b-collapse>
     </div>

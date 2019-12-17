@@ -3,6 +3,7 @@ if(!process.env.MONGODB_URI) throw 'Missing MONGODB_URI environmental variable. 
 
 const MongoClient = require('mongodb').MongoClient;
 const {exec} = require('child_process')
+const path = require('path')
 
 //const client = new MongoClient(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 let _db, io;
@@ -40,5 +41,21 @@ async function getOne(cursor) {
 function getDB() {
     return _db;
 }
-module.exports = {init, getOne, getDB, execShellCommand, io};
+
+function getDataDir() {
+    if(!process.env.ROOT_SERVER_DIR) {
+        const _path = path.join(__dirname,'../../servers');
+        fs.mkdir(_path)
+        .then(() => {
+            console.info('[util] Created default servers/ directory. Change with env ROOT_SERVER_DIR')
+            return _path;
+        })
+        .catch(() => {
+            return null;
+        })
+    }else{
+        return path.normalize(process.env.ROOT_SERVER_DIR)
+    }
+}
+module.exports = {init, getOne, getDB, execShellCommand, io, getDataDir};
 

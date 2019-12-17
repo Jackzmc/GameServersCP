@@ -1,4 +1,6 @@
 const {spawn} = require('child_process')
+const path = require('path')
+
 const fileManager = require('./fileManager')
 const servers = new Map();
 let io;
@@ -55,7 +57,7 @@ function sendCommand(serverName,command) {
 
 function startServer(server) {
     return new Promise(async(resolve,reject) => {
-        console.debug(`[debug] run ${server.type}`,`"${server.path}"`,server.mc)
+        console.debug(`[debug] run ${server.type}`,`"/${server._id}"`,server.mc)
         if(server && Object.keys(server).length > 0) {
             let starter = "";
             let args = [];
@@ -78,7 +80,8 @@ function startServer(server) {
             if(!starter) return console.debug('[proc] Starter is null, skipping'); //if starter ignore, silent (rejected above)
             console.log("[debug] spawn: ",starter,args)
             try {
-                const process = spawn(starter,args,{cwd:server.path,detached:true});
+                const _path = path.join(getDataDir(),server._id)
+                const process = spawn(starter,args,{cwd:_path,detached:true});
 
                 process.on('close',(code,signal) => {
                     console.log('[proc]','Server',server._id,'closed. Code:',code,' Signal:',signal)
