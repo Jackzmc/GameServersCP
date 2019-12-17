@@ -26,6 +26,14 @@
                 </b-radio-button>
             </b-field>
         </b-field>
+        <b-field v-if="type == 'minecraft'" label="Version">
+            <b-field>
+                <b-select v-model="version" placeholder="Choose a version">
+                    <option value="latest">Latest</option>
+                    <option v-for="(name) in versions" :key="name" :value="name">{{name}}</option>
+                </b-select>
+            </b-field>
+        </b-field>
         <div v-if="type == 'sourcegame'">
             <b-field  label="Server AppID" message="Make sure the appID is a dedicated server, not the game client.">
                 <b-input type="number" v-model="appid" placeholder="222860" />
@@ -43,12 +51,15 @@
 </template>
 
 <script>
+import Axios from 'axios'
 export default {
     JARS: ['vanilla','spigot','sponge','paper'],
     data() {
         return {
+            versions:[],
             title:null,
             type:'',
+            version:"latest",
             jar:0,
             appid:null
         }
@@ -58,6 +69,8 @@ export default {
             if(this.type) {
                 if(this.type == "sourcegame") {
                     return !(this.appid)
+                }else if(this.type == 'minecraft') {
+                    return (this.version == null)
                 }
                 return false;
             }else{
@@ -67,10 +80,27 @@ export default {
     },
     methods:{
         createServer() {
-            this.$buefy.toast.open({
-                message:'Not implemented',
-                type:'is-danger'
+            Axios.post(`${this.$apiURL}/server/create`,{
+
+            }).then(() => {
+                this.$buefy.toast.open({
+                    message:'Successfully created server',
+                    type:'is-sucess'
+                })
+                //todo: redirect to server
+            }).catch(err => {
+                this.$buefy.dialog.alert({
+                    title: 'Error',
+                    message: `<b>Failed to create a server: </b><br>${err.message} `,
+                    type: 'is-danger',
+                    hasIcon: true,
+                    icon: 'times-circle',
+                    iconPack: 'fa',
+                    ariaRole: 'alertdialog',
+                    ariaModal: true
+                })
             })
+
         }
     },
     props:['id']
