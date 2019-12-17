@@ -59,44 +59,50 @@ function startServer(server) {
         if(server && Object.keys(server).length > 0) {
             let starter = "";
             let args = [];
-            if(server.type === 'sourcemod') {
-                starter = server.starter||'./srcds_run'
-            }else if(server.type === 'minecraft') {
-                try {
-                    await fileManager.manageJar(server.mc.version,server.mc.jar)
-                    starter = 'java'
-                    args = [`-Xmx${server.mc.memory}M`,`-jar`,`spigot-1.13.2.jar`,`nogui`]
-                }catch(ex) {
-                    reject(ex)
-                }
-            }else{ 
-                reject(new Error('Invalid server type'))
+            switch(server.type) {
+                case "sourcegame":
+                    starter = server.starter||'./srcds_run'
+                    break;
+                case "minecraft":
+                    try {
+                        await fileManager.checkJar(server.mc.jar,server.mc.version,)
+                        starter = 'java'
+                        args = [`-Xmx${server.mc.memory}M`,`-jar`,`spigot-1.13.2.jar`,`nogui`]
+                    }catch(ex) {
+                        return reject(ex)
+                    }
+                    break;
+                default:
+                    return reject(new Error('Invalid server type.'));
             }
+            if(!starter) return console.debug('[proc] Starter is null, skipping'); //if starter ignore, silent (rejected above)
             console.log("[debug] spawn: ",starter,args)
-            const process = spawn(starter,args,{cwd:server.path,detached:true});
-            process.on('exit',(code,signal) => {
-                console.log('[proc]','Server',server._id,'exited. Code:',code,' Signal:',signal)
-                servers.delete(server._id)
-            })
-            process.on('close',(code,signal) => {
-                console.log('[proc]','Server',server._id,'closed. Code:',code,' Signal:',signal)
-                servers.delete(server._id)
-            })
-            process.on('error',(err) => {
-                console.log('[proc/error]',err.message)
+            try {
+                const process = spawn(starter,args,{cwd:server.path,detached:true});
+
+                process.on('close',(code,signal) => {
+                    console.log('[proc]','Server',server._id,'closed. Code:',code,' Signal:',signal)
+                    io.to(server._id).emit('out','[NOTICE] Server has been stopped.')
+                    servers.delete(server._id)
+                })
+                process.on('error',(err) => {
+                    console.log('[proc/error]',err.message)
+                    reject(err)
+                })
+                process.stdout.on('data', (data) => {
+                    console.log('[debug:out]',`[${server._id}]`,data.toString())
+                    io.to(server._id).emit('out',data.toString())
+                })
+                process.stderr.on('data', (data) => {
+                    console.log('[debug:err]',`[${server._id}]`,data.toString())
+                    io.to(server._id).emit('err',data.toString())
+                })
+                console.log('[debug]',server._id,'start success')
+                servers.set(server._id.toString(),process);
+                resolve();
+            }catch(err){
                 reject(err)
-            })
-            process.stdout.on('data', (data) => {
-                console.log('[debug:out]',`[${server._id}]`,data.toString())
-                io.to(server._id).emit('out',data.toString())
-            })
-            process.stderr.on('data', (data) => {
-                console.log('[debug:err]',`[${server._id}]`,data.toString())
-                io.to(server._id).emit('err',data.toString())
-            })
-            console.log('[debug]',server._id,'start success')
-            servers.set(server._id.toString(),process);
-            resolve();
+            }
         }else{
             throw new Error("Server is null or an empty object");
         }

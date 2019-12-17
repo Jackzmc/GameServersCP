@@ -72,9 +72,9 @@ export default {
                     message:'Successfully started server',
                     type:'is-success'
                 })
-            }).catch(() => {
+            }).catch((err) => {
                 this.$buefy.toast.open({
-                    message:'Failed to start server',
+                    message:'Failed to start server: ' + err.message,
                     type:'is-danger'
                 })
             })

@@ -39,7 +39,8 @@ exports.checkJar = (type,version) => {
             resolve();
         }).catch(err => {
             console.log(`[fileManager] Jar not found: ${type}/${version}.jar`)
-            reject('fail')
+            resolve();
+            //reject(new Error('fail'))
             //create jar
         })
     })
