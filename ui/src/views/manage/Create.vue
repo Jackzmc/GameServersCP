@@ -35,14 +35,20 @@
                 </b-select>
             </b-field>
         </b-field>
-        <div v-if="type == 'sourcegame'">
+        <!-- <div v-if="type == 'sourcegame'">
             <b-field  label="Server AppID" message="Make sure the appID is a dedicated server, not the game client.">
                 <b-input type="number" v-model="appid" placeholder="222860" />
             </b-field>
             <a href="https://developer.valvesoftware.com/wiki/Dedicated_Servers_List">Click here to view official list of dedicated server appids</a>
             <br>
-        </div>
-        <br>
+        </div> -->
+        <b-field v-if="type == 'sourcegame'" label="Choose a game" :message="(appids.length==0)?'No supported games for this os.':''">
+            <b-field>
+                <b-select :disabled="appids.length == 0" v-model="appid" placeholder="Choose a game" :loading="appids_loading">
+                    <option v-for="(game) in appids" :key="game.appid" :value="game.appid">{{game.name}} ({{game.appid}})</option>
+                </b-select>
+            </b-field>
+        </b-field>
         <b-field>
             <b-button @click="createServer" :disabled="isDisabled" type="is-primary" size="is-large">Create Server</b-button>
         </b-field>
@@ -64,6 +70,8 @@ export default {
                 paper:[],
                 sponge:[]
             },
+            appids:[],
+            appids_loading:false,
             active_version:[],
             latest_version:null,
             title:null,
@@ -77,6 +85,8 @@ export default {
         type(newType) {
             if(newType === 'minecraft' && this.versions.vanilla.length === 0) {
                 this.getVersions();
+            }else if(newType === "sourcegame" && this.appids.length === 0) {
+                this.getAppIDs();
             }
         },
         jar(newJar) {
@@ -132,6 +142,26 @@ export default {
                 this.version = this.latest_version;
             }).catch(err => {
                 this.loading = false;
+                this.$buefy.dialog.alert({
+                    title: 'Error',
+                    message: `<b>Could not fetch the latest versions at this time.</b><br>${err.message} `,
+                    type: 'is-danger',
+                    hasIcon: true,
+                    icon: 'times-circle',
+                    iconPack: 'fa',
+                    ariaRole: 'alertdialog',
+                    ariaModal: true
+                })
+            })
+        },
+        getAppIDs() {
+            this.appids_loading = true
+            Axios.get(`${this.$apiURL}/appids`).then(r => {
+                this.appids = r.data;
+
+                this.appids_loading = false;
+            }).catch(err => {
+                this.appids_loading = false;
                 this.$buefy.dialog.alert({
                     title: 'Error',
                     message: `<b>Could not fetch the latest versions at this time.</b><br>${err.message} `,

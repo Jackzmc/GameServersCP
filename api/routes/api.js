@@ -19,6 +19,20 @@ router.get('/docs',(req,res) => {
         res.status(500).json({resource:req.path,error:'Could not parse markdown',reason:'InternalServerError'})
     })
 })
+router.get('/appids',async(req,res) => {
+     fs.readFile(path.join(__dirname,'../modules/appids.json'), 'utf8').then(data => {
+        const json = JSON.parse(data)
+        if(req.query.show_all != null) return res.json(json)
+        if(process.platform === "win32") {
+            res.json(json.filter(v => v.windows === true))
+        }else{
+            res.json(json.filter(v => v.linux))
+        }
+    }).catch(err => {
+        console.log(err);
+        res.status(500).json({resource:req.path,error:'Could not parse appids.json',reason:'InternalServerError'})
+    })
+})
 router.get('/versions',async(req,res) => {
     try {
         //
