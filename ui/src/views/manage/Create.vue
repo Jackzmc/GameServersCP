@@ -42,13 +42,22 @@
             <a href="https://developer.valvesoftware.com/wiki/Dedicated_Servers_List">Click here to view official list of dedicated server appids</a>
             <br>
         </div> -->
-        <b-field v-if="type == 'sourcegame'" label="Choose a game" :message="(appids.length==0)?'No supported games for this os.':''">
+        <b-field v-if="type === 'sourcegame'" label="Choose a game" :message="(appids.raw.length==0)?'No supported games for this os.':''">
             <b-field>
-                <b-select :disabled="appids.length == 0" v-model="appid" placeholder="Choose a game" :loading="appids_loading">
-                    <option v-for="(game) in appids" :key="game.appid" :value="game.appid">{{game.name}} ({{game.appid}})</option>
-                </b-select>
+                <b-autocomplete
+                    rounded
+                    :data="appids.filtered"
+                    :custom-formatter="displayName"
+                    open-on-focus
+                    @select="v => appid = v.appid"
+                    @input="filterAppids"
+                    :loading="appids_loading"
+                    placeholder="Choose a game">
+                    <template slot="empty">No results found</template>
+                </b-autocomplete>
             </b-field>
         </b-field>
+        <br>
         <b-field>
             <b-button @click="createServer" :disabled="isDisabled" type="is-primary" size="is-large">Create Server</b-button>
         </b-field>
@@ -70,7 +79,10 @@ export default {
                 paper:[],
                 sponge:[]
             },
-            appids:[],
+            appids:{
+                raw:[],
+                filtered:[]
+            },
             appids_loading:false,
             active_version:[],
             latest_version:null,
@@ -78,18 +90,19 @@ export default {
             type:null,
             version:null,
             jar:'paper',
-            appid:null
+            appid:""
         }
     },
     watch:{
         type(newType) {
             if(newType === 'minecraft' && this.versions.vanilla.length === 0) {
                 this.getVersions();
-            }else if(newType === "sourcegame" && this.appids.length === 0) {
+            }else if(newType === "sourcegame" && this.appids.raw.length === 0) {
                 this.getAppIDs();
             }
         },
         jar(newJar) {
+            this.version = null;
             this.active_version = this.versions[newJar]
         }
     },
@@ -108,6 +121,13 @@ export default {
         }
     },
     methods:{
+        displayName(v) {
+            return `${v.name} (${v.appid})`
+        },
+        filterAppids(text) {
+            if(text === "" || text == null) this.appids.filtered = this.appids.raw;
+            this.appids.filtered = this.appids.raw.filter(v => v.name.toLowerCase().includes(text))
+        },
         createServer() {
             Axios.post(`${this.$apiURL}/server/create`,{
 
@@ -157,7 +177,8 @@ export default {
         getAppIDs() {
             this.appids_loading = true
             Axios.get(`${this.$apiURL}/appids`).then(r => {
-                this.appids = r.data;
+                this.appids.raw = r.data;
+                this.appids.filtered = r.data;
 
                 this.appids_loading = false;
             }).catch(err => {
