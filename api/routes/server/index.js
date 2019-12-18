@@ -10,9 +10,9 @@ const propParser = require("properties-file");
 const isPortReachable = require('is-port-reachable');
 const path = require('path')
 
-const {getOne,getDB,io,getDataDir} = require('../modules/util')
+const {getOne,getDB,io,getDataDir} = require('../../modules/util')
 const {ObjectId} = require('mongodb');
-const procm = require('../modules/processManager');
+const procm = require('../../modules/processManager');
 
 procm.init(io)
 

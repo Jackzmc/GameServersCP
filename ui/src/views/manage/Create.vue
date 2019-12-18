@@ -54,7 +54,7 @@
 <script>
 import Axios from 'axios'
 export default {
-    JARS: {vanilla:true,spigot:false,sponge:false,paper:true},
+    JARS: {vanilla:true,spigot:false,paper:true,sponge:false},
     data() {
         return {
             loading:false,
