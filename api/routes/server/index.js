@@ -24,7 +24,7 @@ procm.init(io)
 // })
 
 const DEFAULT_PORTS = {minecraft: 25565, source: 27015}
-router.use('/:id/backups',require('./server/backups'))
+router.use('/:id/backups',require('./backups'))
 
 
 router.get('/',async(req,res) => {
