@@ -21,8 +21,25 @@ router.get('/docs',(req,res) => {
 })
 router.get('/versions',async(req,res) => {
     try {
-        const response = await got('https://launchermeta.mojang.com/mc/game/version_manifest.json',{responseType: 'json'})
-        res.json(response.body)
+        //
+        const vanilla = await got('https://launchermeta.mojang.com/mc/game/version_manifest.json',{responseType: 'json'})
+        const paper = await got('https://papermc.io/api/v1/paper/',{responseType: 'json'})
+        
+        res.json({
+            latest:vanilla.body.latest,
+            vanilla:vanilla.body.versions.filter(v => v.type === 'release').map(v => {
+                return {
+                    id:v.id,
+                    url:v.url
+                } 
+            }),
+            paper:paper.body.versions.map(v => { 
+                return {
+                    id:v,
+                    url:`https://papermc.io/api/v1/paper/${v}/latest/download`
+                }
+            })
+        })
     }catch(err) {
         console.error('[Error]',req.path,err.message)
         res.status(500).json({resource:req.path,reason:'InternalServerError'})

@@ -22,8 +22,8 @@
         </b-field>
         <b-field v-if="type == 'minecraft'" label="Server Type">
             <b-field >
-                <b-radio-button v-for="(name,index) in $options.JARS" :key="name" v-model="jar" :native-value="index">
-                    <span class="is-capitalized">{{name}}</span>
+                <b-radio-button v-for="(name,key) in $options.JARS" :key="key" v-model="jar" :native-value="key" :disabled="!name">
+                    <span class="is-capitalized">{{key}}</span>
                 </b-radio-button>
             </b-field>
         </b-field>
@@ -31,7 +31,7 @@
             <b-field>
                 <b-select v-model="version" placeholder="Choose a version" :loading="loading">
                     <option :value="latest_version">Latest ({{latest_version}})</option>
-                    <option v-for="(version) in versions" :key="version.id" :value="version.id">{{version.id}}</option>
+                    <option v-for="(version) in active_version" :key="version.id" :value="version.id">{{version.id}}</option>
                 </b-select>
             </b-field>
         </b-field>
@@ -54,24 +54,33 @@
 <script>
 import Axios from 'axios'
 export default {
-    JARS: ['vanilla','spigot','sponge','paper'],
+    JARS: {vanilla:true,spigot:false,sponge:false,paper:true},
     data() {
         return {
             loading:false,
-            versions:[],
+            versions:{
+                spigot:[],
+                vanilla:[],
+                paper:[],
+                sponge:[]
+            },
+            active_version:[],
             latest_version:null,
             title:null,
             type:null,
             version:null,
-            jar:0,
+            jar:'paper',
             appid:null
         }
     },
     watch:{
         type(newType) {
-            if(newType === 'minecraft' && this.versions.length === 0) {
+            if(newType === 'minecraft' && this.versions.vanilla.length === 0) {
                 this.getVersions();
             }
+        },
+        jar(newJar) {
+            this.active_version = this.versions[newJar]
         }
     },
     computed:{
@@ -115,9 +124,11 @@ export default {
         getVersions() {
             this.loading = true;
             Axios.get(`${this.$apiURL}/versions`).then(r => {
-                this.versions = r.data.versions.filter(v => v.type === 'release')
+                this.versions = r.data;
                 this.latest_version = r.data.latest.release;
                 this.loading = false;
+
+                this.active_version = this.versions[this.jar]
                 this.version = this.latest_version;
             }).catch(err => {
                 this.loading = false;
