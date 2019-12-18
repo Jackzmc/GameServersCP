@@ -3,95 +3,181 @@
       "name": "7 Days to Die Dedicated Server",
       "appid": "294420",
       "anonymous": true,
+      "windows": true,
       "linux": true
+    },
+    {
+      "name": "Age of Chivalry Dedicated Server",
+      "appid": "17515",
+      "anonymous": true,
+      "windows": true
+    },
+    {
+      "name": "Alien Swarm Dedicated Server",
+      "appid": "635",
+      "anonymous": null,
+      "windows": true
+    },
+    {
+      "name": "Alien Swarm: Reactive Drop Dedicated Server",
+      "appid": "582400",
+      "anonymous": null,
+      "windows": true
+    },
+    {
+      "name": "Aliens vs Predator Dedicated Server",
+      "appid": "34120",
+      "anonymous": null,
+      "windows": true
+    },
+    {
+      "name": "America's Army 3 Dedicated Server",
+      "appid": "13180",
+      "anonymous": null,
+      "windows": true
+    },
+    {
+      "name": "America's Army 3 Dedicated Server Beta",
+      "appid": "13160",
+      "anonymous": null,
+      "windows": true
+    },
+    {
+      "name": "America's Army: Proving Grounds Dedicated Server",
+      "appid": "203300",
+      "anonymous": null,
+      "windows": true
     },
     {
       "name": "ARK: Survival Evolved Dedicated Server",
       "appid": "376030",
       "anonymous": true,
+      "windows": true,
       "linux": true
+    },
+    {
+      "name": "ARMA 2 Dedicated Server",
+      "appid": "33905",
+      "anonymous": null,
+      "windows": true
+    },
+    {
+      "name": "Arma 2: Operation Arrowhead Dedicated Server",
+      "appid": "33935",
+      "anonymous": null,
+      "windows": true
     },
     {
       "name": "Arma 3 Dedicated Server",
       "appid": "233780",
-      "anonymous": false,
+      "anonymous": null,
+      "windows": true,
       "linux": true
+    },
+    {
+      "name": "Assetto Corsa Dedicated Server",
+      "appid": "302550",
+      "anonymous": null,
+      "windows": true
     },
     {
       "name": "Black Mesa: Deathmatch Dedicated Server",
       "appid": "346680",
       "anonymous": true,
-      "linux": true
-    },
-    {
-      "name": "Blade Symphony Dedicated Server",
-      "appid": "228780",
-      "anonymous": false,
+      "windows": true,
       "linux": true
     },
     {
       "name": "BlazeRush Dedicated Server",
       "appid": "332850",
       "anonymous": true,
+      "windows": true,
       "linux": true
     },
     {
-      "name": "Counter-Strike Dedicated Server",
-      "appid": "90",
-      "anonymous": true,
+      "name": "BrainBread 2 Dedicated Server",
+      "appid": "475370",
+      "anonymous": null,
+      "windows": true,
+      "linux": true
+    },
+    {
+      "name": "Breach Dedicated Server",
+      "appid": "72310",
+      "anonymous": null,
+      "windows": true
+    },
+    {
+      "name": "Brink Dedicated Server",
+      "appid": "72780",
+      "anonymous": null,
+      "windows": true
+    },
+    {
+      "name": "Call of Duty: Modern Warfare 3 Dedicated Server",
+      "appid": "42750",
+      "anonymous": null,
+      "windows": true
+    },
+    {
+      "name": "Capsa Dedicated Server",
+      "appid": "667230",
+      "anonymous": null,
+      "windows": true
+    },
+    {
+      "name": "Chivalry: Deadliest Warrior Dedicated server",
+      "appid": "258680",
+      "anonymous": null,
+      "windows": true
+    },
+    {
+      "name": "Chivalry: Medieval Warfare Dedicated Server",
+      "appid": "220070",
+      "anonymous": null,
+      "windows": true,
       "linux": true
     },
     {
       "name": "Counter-Strike Global Offensive Dedicated Server",
       "appid": "740",
       "anonymous": true,
+      "windows": true,
       "linux": true
     },
     {
-      "name": "Counter-Strike: Condition Zero Dedicated Server",
-      "appid": "90",
+      "name": "D.I.P.R.I.P. Dedicated Server",
+      "appid": "17535",
       "anonymous": true,
-      "linux": true
+      "windows": true
     },
     {
-      "name": "Counter-Strike: Source Dedicated Server",
-      "appid": "232330",
-      "anonymous": true,
-      "linux": true
+      "name": "Dark Messiah of Might & Magic Dedicated Server",
+      "appid": "2145",
+      "anonymous": null,
+      "windows": true
     },
     {
-      "name": "Chivalry Medieval Warfare Dedicated Server",
-      "appid": "220070",
-      "anonymous": true,
-      "linux": true
+      "name": "Darkest Hour Dedicated Server",
+      "appid": "1290",
+      "anonymous": null,
+      "windows": true
     },
     {
-      "name": "Dark Horizons: Mechanized Corps Dedicated Server",
-      "appid": "312070",
-      "anonymous": true,
-      "linux": true
+      "name": "Dayz Dedicated Server",
+      "appid": "223350",
+      "anonymous": null,
+      "windows": true
     },
     {
-      "name": "Day of Defeat Dedicated Server",
-      "appid": "90",
-      "anonymous": true,
-      "linux": true
+      "name": "Dino D-Day Dedicated Server",
+      "appid": "70010",
+      "anonymous": null,
+      "windows": true
     },
     {
-      "name": "Day of Defeat: Source Dedicated Server",
-      "appid": "232290",
-      "anonymous": true,
-      "linux": true
-    },
-    {
-      "name": "Day of Infamy Dedicated Server",
-      "appid": "462310",
-      "anonymous": true,
-      "linux": true
-    },
-    {
-      "name": "Deathmatch Classic Dedicated Server",
-      "appid": "90",
+      "name": "Don't Starve Together Dedicated Server",
+      "appid": "343050",
       "anonymous": true,
       "linux": true
     },
@@ -102,230 +188,345 @@
       "linux": true
     },
     {
-      "name": "Don't Starve Together Dedicated Server",
-      "appid": "343050",
+      "name": "Dystopia Dedicated Server",
+      "appid": "17585",
       "anonymous": true,
-      "linux": true
+      "windows": true
     },
     {
-      "name": "Fistful of Frags Server",
-      "appid": "295230",
-      "anonymous": true,
-      "linux": true
+      "name": "E.Y.E - Dedicated Server",
+      "appid": "91720",
+      "anonymous": null,
+      "windows": true
     },
     {
-      "name": "Garry's Mod Dedicated Server",
-      "appid": "4020",
+      "name": "Eden Star Dedicated Server",
+      "appid": "419790",
       "anonymous": true,
-      "linux": true
+      "windows": true
     },
     {
-      "name": "Half-Life 2: Deathmatch Dedicated Server",
-      "appid": "232370",
+      "name": "Empires Dedicated Server",
+      "appid": "460040",
       "anonymous": true,
-      "linux": true
+      "windows": true
     },
     {
-      "name": "Hurtworld dedicated server",
-      "appid": "405100",
+      "name": "Eternal Silence Dedicated Server",
+      "appid": "17555",
       "anonymous": true,
-      "linux": true
+      "windows": true
+    },
+    {
+      "name": "Fortress Forever Dedicated Server",
+      "appid": "329710",
+      "anonymous": true,
+      "windows": true
+    },
+    {
+      "name": "GTR Evolution Demo Dedicated Server",
+      "appid": "8730",
+      "anonymous": null,
+      "windows": true
     },
     {
       "name": "Half-Life Deathmatch: Source Dedicated server",
       "appid": "255470",
       "anonymous": true,
+      "windows": true,
       "linux": true
     },
     {
       "name": "Half-Life Dedicated Server",
       "appid": "90",
       "anonymous": true,
+      "windows": true,
       "linux": true
     },
     {
-      "name": "Half-Life: Opposing Force Server",
-      "appid": "90",
-      "anonymous": true,
-      "linux": true
+      "name": "Homefront Dedicated Server",
+      "appid": "55280",
+      "anonymous": null,
+      "windows": true
     },
     {
       "name": "Insurgency 2014 Dedicated Server",
       "appid": "237410",
       "anonymous": true,
+      "windows": true,
       "linux": true
     },
     {
       "name": "Insurgency: Modern Infantry Combat Dedicated Server",
       "appid": "17705",
       "anonymous": true,
+      "windows": true,
       "linux": true
     },
     {
-      "name": "Just Cause 2: Multiplayer - Dedicated Server",
+      "name": "Insurgency: Sandstorm Dedicated Server",
+      "appid": "581330",
+      "anonymous": true,
+      "windows": true
+    },
+    {
+      "name": "Just Cause 2: Multiplayer Dedicated Server",
       "appid": "261140",
       "anonymous": true,
-      "linux": true
-    },
-    {
-      "name": "Killing Floor Dedicated Server - Linux",
-      "appid": "215360",
-      "anonymous": false,
+      "windows": true,
       "linux": true
     },
     {
       "name": "Killing Floor 2 Dedicated Server",
       "appid": "232130",
       "anonymous": true,
+      "windows": true,
       "linux": true
+    },
+    {
+      "name": "Killing Floor Beta Dedicated Server ",
+      "appid": "1273",
+      "anonymous": null,
+      "windows": true
+    },
+    {
+      "name": "Kingdoms Rise Dedicated Server",
+      "appid": "265360",
+      "anonymous": true,
+      "windows": true
+    },
+    {
+      "name": "Lambda Wars Dedicated Server",
+      "appid": "319060",
+      "anonymous": null,
+      "windows": true
     },
     {
       "name": "Left 4 Dead 2 Dedicated Server",
       "appid": "222860",
       "anonymous": true,
+      "windows": true,
       "linux": true
     },
     {
       "name": "Left 4 Dead Dedicated Server",
       "appid": "222840",
       "anonymous": true,
+      "windows": true,
       "linux": true
+    },
+    {
+      "name": "Life is Feudal: Your Own Dedicated Server",
+      "appid": "320850",
+      "anonymous": true,
+      "windows": true
+    },
+    {
+      "name": "Mare Nostrum Dedicated Server",
+      "appid": "1240",
+      "anonymous": null,
+      "windows": true
+    },
+    {
+      "name": "Monday Night Combat Dedicated Server",
+      "appid": "63220",
+      "anonymous": null,
+      "windows": true
     },
     {
       "name": "Natural Selection 2 Dedicated Server",
       "appid": "4940",
-      "anonymous": false,
+      "anonymous": null,
+      "windows": true,
       "linux": true
     },
     {
-      "name": "NS2: Combat Dedicated Server",
-      "appid": "313900",
-      "anonymous": true,
-      "linux": true
+      "name": "Nexuiz Dedicated Server",
+      "appid": "96810",
+      "anonymous": null,
+      "windows": true
     },
     {
-      "name": "No More Room In Hell Dedicated Server",
-      "appid": "317670",
+      "name": "Nuclear Dawn Dedicated Server",
+      "appid": "111710",
       "anonymous": true,
-      "linux": true
+      "windows": true
     },
     {
-      "name": "Out of Reach Dedicated Server",
-      "appid": "406800",
-      "anonymous": true,
-      "linux": true
+      "name": "Painkiller Hell & Damnation Dedicated Server",
+      "appid": "230030",
+      "anonymous": null,
+      "windows": true
     },
     {
       "name": "Pirates, Vikings, and Knights II Dedicated Server",
       "appid": "17575",
       "anonymous": true,
+      "windows": true,
       "linux": true
     },
     {
-      "name": "Project Zomboid Dedicated Server",
-      "appid": "108600",
-      "anonymous": true,
-      "linux": true
+      "name": "RACE 07 Dedicated Server",
+      "appid": "8610",
+      "anonymous": null,
+      "windows": true
+    },
+    {
+      "name": "RACE On - Demo: Dedicated Server",
+      "appid": "8770",
+      "anonymous": null,
+      "windows": true
+    },
+    {
+      "name": "Ravaged Dedicated Server",
+      "appid": "223160",
+      "anonymous": null,
+      "windows": true
     },
     {
       "name": "Red Orchestra Linux Dedicated Server",
       "appid": "223250",
-      "anonymous": false,
+      "anonymous": null,
       "linux": true
     },
     {
-      "name": "Ricochet Dedicated Server",
-      "appid": "90",
-      "anonymous": true,
-      "linux": true
+      "name": "Red Orchestra Windows Dedicated Server",
+      "appid": "223240",
+      "anonymous": null,
+      "windows": true
     },
     {
-      "name": "Rust Dedicated Server",
-      "appid": "258550",
-      "anonymous": true,
-      "linux": true
+      "name": "Reign Of Kings Dedicated Server",
+      "appid": "381690",
+      "anonymous": null,
+      "windows": true
     },
     {
       "name": "Serious Sam 3 Dedicated Server",
       "appid": "41080",
-      "anonymous": false,
+      "anonymous": null,
+      "windows": true,
       "linux": true
     },
     {
-      "name": "Sven Co-op Dedicated Server",
-      "appid": "276060",
-      "anonymous": true,
-      "linux": true
+      "name": "Serious Sam HD Dedicated Server",
+      "appid": "41005",
+      "anonymous": null,
+      "windows": true
     },
     {
-      "name": "Source SDK Base 2006 MP Dedicated Server",
-      "appid": "205",
-      "anonymous": true,
-      "linux": true
+      "name": "Sniper Elite 3 Dedicated Server",
+      "appid": "266910",
+      "anonymous": null,
+      "windows": true
+    },
+    {
+      "name": "Sniper Elite V2 Dedicated Server",
+      "appid": "208050",
+      "anonymous": null,
+      "windows": true
     },
     {
       "name": "Source 2007 Dedicated Server",
       "appid": "310",
       "anonymous": true,
+      "windows": true,
       "linux": true
     },
     {
       "name": "Source Dedicated Server",
       "appid": "205",
       "anonymous": true,
+      "windows": true,
       "linux": true
     },
     {
       "name": "Source SDK Base 2013 Dedicated Server",
       "appid": "244310",
       "anonymous": true,
+      "windows": true,
       "linux": true
+    },
+    {
+      "name": "Space Engineers Dedicated Server",
+      "appid": "298740",
+      "anonymous": true,
+      "windows": true
     },
     {
       "name": "Squad Dedicated Server",
       "appid": "403240",
       "anonymous": true,
+      "windows": true,
       "linux": true
     },
     {
-      "name": "Team Fortress 2 Dedicated Server",
-      "appid": "232250",
+      "name": "Starbound Dedicated server",
+      "appid": "211820",
+      "anonymous": null,
+      "windows": true,
+      "linux": true
+    },
+    {
+      "name": "Starvoid Dedicated Server",
+      "appid": "210370",
+      "anonymous": null,
+      "windows": true
+    },
+    {
+      "name": "STCC - The Game Demo Dedicated Server",
+      "appid": "8710",
+      "anonymous": null,
+      "windows": true
+    },
+    {
+      "name": "Synergy Dedicated Server",
+      "appid": "17525",
       "anonymous": true,
-      "linux": true
+      "windows": true
     },
     {
-      "name": "Team Fortress Classic Dedicated Server",
-      "appid": "90",
+      "name": "Takedown: Red Sabre Dedicated Server",
+      "appid": "261020",
       "anonymous": true,
-      "linux": true
-    },
-    {
-      "name": "The Ship Dedicated Server",
-      "appid": "2403",
-      "linux": true
-    },
-    {
-      "name": "Tower Unite Dedicated Server",
-      "appid": "439660",
-      "anonymous": true,
-      "linux": true
+      "windows": true
     },
     {
       "name": "Terraria Dedicated Server",
       "appid": "105600",
-      "anonymous": false,
+      "anonymous": null,
+      "linux": true
+    },
+    {
+      "name": "The Forest Dedicated Server",
+      "appid": "556450",
+      "anonymous": true,
+      "windows": true
+    },
+    {
+      "name": "The Haunted: Hells Reach Dedicated Server",
+      "appid": "43210",
+      "anonymous": null,
+      "windows": true
+    },
+    {
+      "name": "The Ship Dedicated Server",
+      "appid": "2403",
+      "anonymous": null,
+      "windows": true,
       "linux": true
     },
     {
       "name": "Unturned Dedicated Server",
       "appid": "304930",
-      "anonymous": true,
+      "anonymous": null,
       "linux": true
     },
     {
       "name": "Zombie Panic Source Dedicated Server",
       "appid": "17505",
       "anonymous": true,
+      "windows": true,
       "linux": true
     }
 ]
