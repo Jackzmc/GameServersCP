@@ -119,7 +119,6 @@ router.patch('/:id/tags',async(req,res) => {
             }
             res.status(404).end();*/
         }catch(ex) {
-            console.log(ex)
             res.status(500).json({
                 resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
             })

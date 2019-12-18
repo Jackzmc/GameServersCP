@@ -115,8 +115,8 @@ export default {
         getVersions() {
             this.loading = true;
             Axios.get(`${this.$apiURL}/versions`).then(r => {
-                this.versions = r.data.versions;
-                this.latest_version = r.data.latest.id;
+                this.versions = r.data.versions.filter(v => v.type === 'release')
+                this.latest_version = r.data.latest.release;
                 this.loading = false;
                 this.version = this.latest_version;
             }).catch(err => {

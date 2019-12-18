@@ -3,7 +3,7 @@ const marked = require('marked')
 const fs = require('fs').promises
 const path = require('path')
 const cors = require('cors')
-const mcversions = require('mcversions')
+const got = require('got')
 
 module.exports = router;
 router.use(cors())
@@ -19,43 +19,14 @@ router.get('/docs',(req,res) => {
         res.status(500).json({resource:req.path,error:'Could not parse markdown',reason:'InternalServerError'})
     })
 })
-router.get('/versions',(req,res) => {
-    let latest = {}
-    mcversions.getLatestReleaseVersion(function (err, version) {
-        if (err) {
-            res.status(500).json({
-                resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
-            })
-            console.error('[Error]',req.path,err.message)
-        }else{
-            latest = version;
-        }
-    });
-    mcversions.getAllVersions(function (err, versions) {
-        if (err) {
-            res.status(500).json({
-                resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
-            })
-            console.error('[Error]',req.path,err.message)
-        }else{
-
-            res.json({
-                latest,
-                versions:versions.filter(v => v.type === 'release')
-            })
-        }
-    });
-})
-router.get('/versions/latest',(req,res) => {
-    mcversions.getLatestReleaseVersion(function (err, version) {
-        if (err) {
-            res.status(500).json({
-                resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
-            })
-            console.error('[Error]',req.path,err.message)
-        }
-        res.json(version)
-    });
+router.get('/versions',async(req,res) => {
+    try {
+        const response = await got('https://launchermeta.mojang.com/mc/game/version_manifest.json',{responseType: 'json'})
+        res.json(response.body)
+    }catch(err) {
+        console.error('[Error]',req.path,err.message)
+        res.status(500).json({resource:req.path,reason:'InternalServerError'})
+    }
 })
 
 router.get('*',(req,res) => {
