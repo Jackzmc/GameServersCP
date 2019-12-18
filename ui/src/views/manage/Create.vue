@@ -42,14 +42,14 @@
             <a href="https://developer.valvesoftware.com/wiki/Dedicated_Servers_List">Click here to view official list of dedicated server appids</a>
             <br>
         </div> -->
-        <b-field v-if="type === 'sourcegame'" label="Choose a game" :message="(appids.raw.length==0)?'No supported games for this os.':''">
+        <b-field v-if="type === 'sourcegame'" label="Choose a game">
             <b-field>
                 <b-autocomplete
                     rounded
                     :data="appids.filtered"
                     :custom-formatter="displayName"
                     open-on-focus
-                    @select="v => appid = v.appid"
+                    @select="selectAppids"
                     @input="filterAppids"
                     :loading="appids_loading"
                     placeholder="Choose a game">
@@ -57,6 +57,11 @@
                 </b-autocomplete>
             </b-field>
         </b-field>
+        <div v-if="appid_anonymous_warn">
+            <b-message type="is-warning" >
+                The selected appid does not have anonymous login supported. Please make sure you have a username and password setup on the control panel.
+            </b-message>
+        </div>
         <br>
         <b-field>
             <b-button @click="createServer" :disabled="isDisabled" type="is-primary" size="is-large">Create Server</b-button>
@@ -90,7 +95,8 @@ export default {
             type:null,
             version:null,
             jar:'paper',
-            appid:""
+            appid:"",
+            appid_anonymous_warn:false
         }
     },
     watch:{
@@ -110,7 +116,7 @@ export default {
         isDisabled() {
             if(this.type) {
                 if(this.type == "sourcegame") {
-                    return !(this.appid)
+                    return (!this.appid || this.appid === "" )
                 }else if(this.type == 'minecraft') {
                     return (this.version == null)
                 }
@@ -124,8 +130,19 @@ export default {
         displayName(v) {
             return `${v.name} (${v.appid})`
         },
+        selectAppids(app) {
+            this.appid = app.appid
+            if(app.anonymous !== true) {
+                this.appid_anonymous_warn = true
+            }else{
+                this.appid_anonymous_warn = false
+            }
+        },
         filterAppids(text) {
-            if(text === "" || text == null) this.appids.filtered = this.appids.raw;
+            if(text === "" || text == null) {
+                this.appids.filtered = this.appids.raw;
+                this.appid = ""
+            }
             this.appids.filtered = this.appids.raw.filter(v => v.name.toLowerCase().includes(text))
         },
         createServer() {
