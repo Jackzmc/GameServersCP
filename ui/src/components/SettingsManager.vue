@@ -16,6 +16,13 @@
         </b-field>
     </span>
     <br>
+    <div class="field">
+        <b-checkbox disabled>Start on control panel start</b-checkbox>
+    </div>
+    <div class="field">
+        <b-checkbox disabled>Auto restart on crash</b-checkbox>
+    </div>
+    <br>
     <div class="buttons">
         <b-button @click="saveField('settings')" :disabled="!hasSettingsChanged" type="is-primary" ><font-awesome-icon icon="save" /> Save Settings</b-button>
         <b-button type="is-info" icon-left="sync" @click="loadConfig" :loading="refreshing">Refresh</b-button>
