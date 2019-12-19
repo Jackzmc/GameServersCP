@@ -4,18 +4,18 @@
     <!-- <b-loading :active="loading" /> -->
     <form>
         <b-field label="Enter ID (optional)" message="Must be a unique, single alphanumeric combination. Leave blank for a random UUID">
-            <b-input v-model="id" placeholder="csgo" />
+            <b-input v-model="id" placeholder="csgo" pattern="^[A-Za-z0-9_-]+$" validation-message="Must be a unique, single alphanumeric combination. Leave blank for a random UUID" />
         </b-field>
         <b-field label="Enter Display Title" message="">
             <b-input v-model="title" placeholder="My CSGO Server" required />
         </b-field>
         <b-field label="Game Type">
             <b-field>
-                <b-radio-button v-model="type" native-value="minecraft">
+                <b-radio-button v-model="type" native-value="minecraft" required>
                     <span>Minecraft</span>
                 </b-radio-button>
 
-                <b-radio-button v-model="type" native-value="sourcegame">
+                <b-radio-button v-model="type" native-value="sourcegame" required>
                     <span>Source Game</span>
                 </b-radio-button>
             </b-field>
@@ -73,6 +73,7 @@
 
 <script>
 import Axios from 'axios'
+import UUID from 'uuid/v4';
 export default {
     JARS: {vanilla:true,spigot:false,paper:true,sponge:false},
     data() {
@@ -114,6 +115,7 @@ export default {
     },
     computed:{
         isDisabled() {
+           if(!this.title) return true;
             if(this.type) {
                 if(this.type == "sourcegame") {
                     return (!this.appid || this.appid === "" )
@@ -154,14 +156,41 @@ export default {
         },
         createServer() {
             Axios.post(`${this.$apiURL}/server/create`,{
-
-            }).then(() => {
-                this.$buefy.toast.open({
-                    message:'Successfully created server',
-                    type:'is-sucess'
+                id:this.id||UUID(),
+                name:this.title,
+                type:this.type,
+                appid:this.appid,
+                mc:{
+                    version:this.version,
+                    jar:this.jar,
+                    memory:'512'
+                }
+            }).then((r) => {
+                this.$buefy.snackbar.open({
+                    message:'Successfully created server.',
+                    type:'is-success',
+                    position: 'is-top',
+                    actionText: 'View',
+                    onAction: () => {
+                        this.$router.push(`/manage/server/${r.data.id}`)
+                    }
                 })
                 //todo: redirect to server
             }).catch(err => {
+                if(err.response && err.response.data.reason && err.response.data.reason === "ServerAlreadyExists") {
+                    return this.$buefy.toast.open({
+                        type:'is-danger',
+                        message:`Could not create server: ${err.response.data.error}`
+                    })
+                }
+                if(err.errors) {
+                    err.errors.forEach(v => {
+                        this.$buefy.toast.open({
+                            type:'is-danger',
+                            message:`${v.param}: ${v.message}`
+                        })
+                    })
+                }
                 this.$buefy.dialog.alert({
                     title: 'Error',
                     message: `<b>Failed to create a server: </b><br>${err.message} `,
