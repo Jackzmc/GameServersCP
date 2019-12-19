@@ -528,5 +528,12 @@
       "anonymous": true,
       "windows": true,
       "linux": true
+    },
+    {
+        "name": "Double Action: Boogaloo Dedicated Server",
+        "appid": "317800",
+        "anonymous": true,
+        "windows": true,
+        "linux": true
     }
 ]
