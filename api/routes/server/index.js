@@ -233,8 +233,9 @@ router.get('/:id/config',async(req,res) => {
             try {
                 let final_object = {}
                 if(server.type == "minecraft") {
-                    const server_prop = await fs.readFile(path.join(ROOT_DIR,server._id.toString(),"/server.properties"),'utf-8');
-                    final_object['server_properties'] = propParser.parse(server_prop)
+                    fs.readFile(path.join(ROOT_DIR,server._id.toString(),"/server.properties"),'utf-8').then(server_prop => {
+                        final_object['server_properties'] = propParser.parse(server_prop)
+                    }).catch(() => {})
                 }
                 res.json(final_object)
             }catch(exc) {
