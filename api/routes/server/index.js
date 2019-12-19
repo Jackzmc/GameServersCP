@@ -24,6 +24,7 @@ procm.init(io)
 // })
 
 const DEFAULT_PORTS = {minecraft: 25565, source: 27015}
+const ROOT_DIR = getDataDir();
 router.use('/:id/backups',require('./backups'))
 
 
@@ -178,7 +179,7 @@ router.get('/:id/config',async(req,res) => {
             try {
                 let final_object = {}
                 if(server.type == "minecraft") {
-                    const server_prop = await fs.readFile(path.join(getDataDir(),server._id,"/server.properties"),'utf-8');
+                    const server_prop = await fs.readFile(path.join(ROOT_DIR,server._id.toString(),"/server.properties"),'utf-8');
                     final_object['server_properties'] = propParser.parse(server_prop)
                 }
                 res.json(final_object)
@@ -208,11 +209,11 @@ router.get('/:id/logs',async(req,res) => {
             const server = arr.length > 0 ? arr[0] : {};
             if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
             try {
-                const _path = path.join(getDataDir(),server._id.toString(),"/logs");
+                const _path = path.join(ROOT_DIR,server._id.toString(),"/logs");
                 const files = await fs.readdir(_path);
                 const logs = [];
                 for(const v in files) {
-                    const info = await fs.stat(path.join(getDataDir(),server._id,"/logs/",files[v]))
+                    const info = await fs.stat(path.join(ROOT_DIR,server._id,"/logs/",files[v]))
                     if(info.isFile()) {
                         logs.push({
                             name:files[v],
@@ -247,7 +248,7 @@ router.get('/:id/logs/:log',async(req,res) => {
             const server = arr.length > 0 ? arr[0] : {};
             if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
             try {
-                const rawStream = fsl.createReadStream(path.join(getDataDir(),server._id,"/logs",req.params.log));
+                const rawStream = fsl.createReadStream(path.join(ROOT_DIR,server._id,"/logs",req.params.log));
                 if(req.query.download) {
                     return rawStream.pipe(res);
                 }
@@ -287,7 +288,7 @@ router.delete('/:id/logs/:log',async(req,res) => {
             const server = arr.length > 0 ? arr[0] : {};
             if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
             try {
-                await fs.unlink(path.join(getDataDir(),server._id,"/logs/",req.params.logs))
+                await fs.unlink(path.join(ROOT_DIR,server._id,"/logs/",req.params.logs))
                 res.json({success:true})
             }catch(exc) {
                 res.status(500).json({
