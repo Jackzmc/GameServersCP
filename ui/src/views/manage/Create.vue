@@ -3,8 +3,8 @@
     <h4 class="title is-4 has-text-centered">Create New Server</h4>
     <!-- <b-loading :active="loading" /> -->
     <form>
-        <b-field label="Enter ID (optional)" message="Must be a unique, single alphanumeric combination. Leave blank for a random UUID">
-            <b-input v-model="id" placeholder="csgo" pattern="^[A-Za-z0-9_-]+$" validation-message="Must be a unique, single alphanumeric combination. Leave blank for a random UUID" />
+        <b-field label="Enter ID (optional)" message="Must be a unique, single alphanumeric combination. Leave blank for a random id">
+            <b-input v-model="id" placeholder="csgo" pattern="^[A-Za-z0-9_-]+$" validation-message="Must be a unique, single alphanumeric combination. Leave blank for a random id" />
         </b-field>
         <b-field label="Enter Display Title" message="">
             <b-input v-model="title" placeholder="My CSGO Server" required />
@@ -73,7 +73,6 @@
 
 <script>
 import Axios from 'axios'
-import UUID from 'uuid/v4';
 export default {
     JARS: {vanilla:true,spigot:false,paper:true,sponge:false},
     data() {
@@ -156,7 +155,7 @@ export default {
         },
         createServer() {
             Axios.post(`${this.$apiURL}/server/create`,{
-                id:this.id||UUID(),
+                id:this.id,
                 name:this.title,
                 type:this.type,
                 appid:this.appid,

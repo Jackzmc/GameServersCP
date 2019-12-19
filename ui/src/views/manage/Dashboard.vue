@@ -1,6 +1,6 @@
 <template>
 <div id="app">
-  <div class="container">
+  <div class="container is-fluid">
       <b-table :data="servers" striped :loading="loading">
         <template slot-scope="props" >
           <b-table-column label="Access" width="40">
@@ -52,7 +52,6 @@
 
 <script>
 import Axios from 'axios';
-import UUID from 'uuid/v4';
 
 export default {
   name: 'app',
@@ -74,10 +73,9 @@ export default {
       return arr.map(v => `<span class='tag'>${v}</span>`).join(" ")
     },
     startNewCreation() {
-      const uuid = UUID();
       this.$router.push({
         name:'create',
-        params:{id:this.new_id||uuid}
+        params:{id:this.new_id}
       })
     },
     viewServer(id) {
