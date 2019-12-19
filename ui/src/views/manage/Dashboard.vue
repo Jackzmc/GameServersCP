@@ -11,11 +11,11 @@
           </b-table-column>
 
           <b-table-column field="tags" label="Tags" width="160">
-              {{props.row.tags.join(", ")}}
+              <span v-html="formatTags(props.row.tags)"></span>{{props.row.tags.join(", ")}}
           </b-table-column>
 
           <b-table-column field="players" label="Players" width="20">
-              {{props.row.players}} / {{props.row.players_max}}
+              {{props.row.players||0}} / {{props.row.players_max||0}}
           </b-table-column>
 
           <b-table-column label="Action" width="160">
@@ -69,6 +69,10 @@ export default {
     this.loadServers();
   },
   methods:{
+    formatTags(tags) {
+      const arr = tags.splice(0,3);
+      return arr.map(v => `<span class='tag'>${v}</span>`).join(" ")
+    },
     startNewCreation() {
       const uuid = UUID();
       this.$router.push({
@@ -122,10 +126,8 @@ export default {
       Axios.get(`${this.$apiURL}/server`,{json:true}).then((r) => {
         this.servers = r.data.servers;
         this.loading = false;
-
       }).catch(err => {
         this.loading = false;
-
         this.$buefy.dialog.alert({
             title: 'Error',
             message: `<b>Something happened while fetching servers.</b><br>${err.message} `,
