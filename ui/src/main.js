@@ -3,7 +3,8 @@ import VueRouter from 'vue-router'
 import App from './App.vue'
 import Buefy from 'buefy';
 import 'buefy/dist/buefy.css'
-import moment from 'moment';
+import {formatDistanceToNow, format } from 'date-fns'
+//import * as moment from 'moment';
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -22,17 +23,20 @@ Vue.prototype.$socketURL = process.env.VUE_APP_SOCKET_URL;
 
 Vue.filter('formatDate', function(value) {
   if (value) {
-    return moment(String(value)).format('YYYY/MM/DD [at] hh:mm')
+    return format(new Date(value),'YYYY/MM/DD [at] hh:mm')
+    //return moment(String(value)).format()
   }
 })
 Vue.filter('formatDateSimple', function(value) {
   if (value) {
-    return moment(String(value)).format('YYYY/MM/DD')
+    return format(new Date(value),'YYYY/MM/DD')
+    //return moment(String(value)).format('YYYY/MM/DD')
   }
 })
 Vue.filter('formatUptime', function(value) {
   if (value) {
-    return moment(value).fromNow(true);
+    return formatDistanceToNow(new Date(value));
+    //return moment(value).fromNow(true);
   }
 })
 Vue.filter('humanizeSize', function(size) {
