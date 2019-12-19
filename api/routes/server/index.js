@@ -142,19 +142,15 @@ router.get('/:id',async(req,res) => {
 })
 router.get('/:id/start',async(req,res) => {
     try {
-        try {
-            _id = new ObjectId(req.params.id)
-            const arr = await getDB().collection("servers").find(_id).toArray();
-            const server = arr.length > 0 ? arr[0] : {};
-            if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
-            procm.startServer(server).then(() => {
-                res.end()
-            }).catch(err => {
-                res.status(500).json({error:err.message})
-            })
-        }catch(ex) {
-            res.status(400).json({resource:req.path,error:"Invalid server id. Needs to be 12 string or 24 hex chars.",reason:"InvalidServerID"})
-        }
+        const id = getId(req.params.id);
+        const arr = await getDB().collection("servers").find({_id:id}).toArray();
+        const server = arr.length > 0 ? arr[0] : {};
+        if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
+        procm.startServer(server).then(() => {
+            res.end()
+        }).catch(err => {
+            res.status(500).json({error:err.message})
+        })
     }catch(err) {
         res.status(500).json({
             resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
@@ -167,8 +163,8 @@ router.patch('/:id/tags',async(req,res) => {
     if(req.body.tags && Array.isArray(req.body.tags)) {
         try {
             
-            const _id = new ObjectId(req.params.id)
-            getDB().collection("servers").updateOne({_id},{$set: {tags: req.body.tags}}).then(r => {
+            const id = getId(req.params.id)
+            getDB().collection("servers").updateOne({_id:id},{$set: {tags: req.body.tags}}).then(r => {
                 res.status(200).end();
             }).catch(err => {
                 res.status(500).json({resource:req.path,error:"Invalid server id. Needs to be 12 string or 24 hex chars.",reason:"InvalidServerID"})
@@ -198,9 +194,8 @@ router.patch('/:id/tags',async(req,res) => {
 })
 router.get('/:id/portcheck',async(req,res) => {
     try {
-        try {
-            _id = new ObjectId(req.params.id)
-            const arr = await getDB().collection("servers").find(_id).toArray();
+        const id = getId(req.params.id);
+        const arr = await getDB().collection("servers").find({_id:id}).toArray();
             try {
                 if(arr.length > 0 && arr[0].ip ) {
                     const ip = arr[0].ip;
@@ -220,9 +215,6 @@ router.get('/:id/portcheck',async(req,res) => {
                 })
                 console.error('[Error]',req.path,err.message)
             }
-        }catch(ex) {
-            res.status(400).json({resource:req.path,error:"Invalid server id. Needs to be 12 string or 24 hex chars.",reason:"InvalidServerID"})
-        }
     }catch(err) {
         res.status(500).json({
             resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
@@ -234,9 +226,8 @@ router.get('/:id/portcheck',async(req,res) => {
 
 router.get('/:id/config',async(req,res) => {
     try {
-        try {
-            _id = new ObjectId(req.params.id)
-            const arr = await getDB().collection("servers").find(_id).toArray();
+        const id = getId(req.params.id);
+        const arr = await getDB().collection("servers").find({_id:id}).toArray();
             const server = arr.length > 0 ? arr[0] : {};
             if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
             try {
@@ -252,9 +243,6 @@ router.get('/:id/config',async(req,res) => {
                 })
                 console.error('[Error]',req.path,exc.message)
             }
-        }catch(ex) {
-            res.status(400).json({resource:req.path,error:"Invalid server id. Needs to be 12 string or 24 hex chars.",reason:"InvalidServerID"})
-        }
     }catch(err) {
         res.status(500).json({
             resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
@@ -266,9 +254,8 @@ router.get('/:id/config',async(req,res) => {
 
 router.get('/:id/logs',async(req,res) => {
     try {
-        try {
-            _id = new ObjectId(req.params.id)
-            const arr = await getDB().collection("servers").find(_id).toArray();
+        const id = getId(req.params.id);
+        const arr = await getDB().collection("servers").find({_id:id}).toArray();
             const server = arr.length > 0 ? arr[0] : {};
             if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
             try {
@@ -293,9 +280,6 @@ router.get('/:id/logs',async(req,res) => {
                 })
                 console.error('[Error]',req.path,exc.stack)
             }
-        }catch(ex) {
-            res.status(400).json({resource:req.path,error:"Invalid server id. Needs to be 12 string or 24 hex chars.",reason:"InvalidServerID"})
-        }
     }catch(err) {
         res.status(500).json({
             resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
@@ -305,9 +289,8 @@ router.get('/:id/logs',async(req,res) => {
 })
 router.get('/:id/logs/:log',async(req,res) => {
     try {
-        try {
-            _id = new ObjectId(req.params.id)
-            const arr = await getDB().collection("servers").find(_id).toArray();
+        const id = getId(req.params.id);
+        const arr = await getDB().collection("servers").find({_id:id}).toArray();
             const server = arr.length > 0 ? arr[0] : {};
             if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
             try {
@@ -332,9 +315,6 @@ router.get('/:id/logs/:log',async(req,res) => {
                 })
                 console.error('[Error]',req.path,exc.message)
             }
-        }catch(ex) {
-            res.status(400).json({resource:req.path,error:"Invalid server id. Needs to be 12 string or 24 hex chars.",reason:"InvalidServerID"})
-        }
     }catch(err) {
         res.status(500).json({
             resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
@@ -345,9 +325,8 @@ router.get('/:id/logs/:log',async(req,res) => {
 
 router.delete('/:id/logs/:log',async(req,res) => {
     try {
-        try {
-            _id = new ObjectId(req.params.id)
-            const arr = await getDB().collection("servers").find(_id).toArray();
+        const id = getId(req.params.id);
+        const arr = await getDB().collection("servers").find({_id:id}).toArray();
             const server = arr.length > 0 ? arr[0] : {};
             if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
             try {
@@ -359,9 +338,6 @@ router.delete('/:id/logs/:log',async(req,res) => {
                 })
                 console.error('[Error]',req.path,exc.message)
             }
-        }catch(ex) {
-            res.status(400).json({resource:req.path,error:"Invalid server id. Needs to be 12 string or 24 hex chars.",reason:"InvalidServerID"})
-        }
     }catch(err) {
         res.status(500).json({
             resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
