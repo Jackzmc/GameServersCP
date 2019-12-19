@@ -59,7 +59,7 @@
         </b-field>
         <div v-if="appid_anonymous_warn">
             <b-message type="is-warning" >
-                The selected appid does not have anonymous login supported. Please make sure you have a username and password setup on the control panel.
+                *The selected appid does not have anonymous login supported. Please make sure you have a username and password setup on the control panel.
             </b-message>
         </div>
         <br>
@@ -128,14 +128,19 @@ export default {
     },
     methods:{
         displayName(v) {
-            return `${v.name} (${v.appid})`
+            return `${v.name} (${v.appid}) ${v.anonymous === true?'':'*'}` 
         },
         selectAppids(app) {
-            this.appid = app.appid
-            if(app.anonymous !== true) {
-                this.appid_anonymous_warn = true
+            if(app) {
+                this.appid = app.appid
+                console.log(app) //eslint-disable-line
+                if(app.anonymous !== true) {
+                    this.appid_anonymous_warn = true
+                }else{
+                    this.appid_anonymous_warn = false
+                }
             }else{
-                this.appid_anonymous_warn = false
+                this.appid = ""
             }
         },
         filterAppids(text) {
@@ -143,7 +148,9 @@ export default {
                 this.appids.filtered = this.appids.raw;
                 this.appid = ""
             }
-            this.appids.filtered = this.appids.raw.filter(v => v.name.toLowerCase().includes(text))
+            const search = text.replace(/\s(\(\d+)(\)\s?\*?)?/,'').trim().toLowerCase();
+            console.log('search',search) //eslint-disable-line
+            this.appids.filtered = this.appids.raw.filter(v => v.name.trim().toLowerCase().includes(search))
         },
         createServer() {
             Axios.post(`${this.$apiURL}/server/create`,{
