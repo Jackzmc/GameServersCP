@@ -9,6 +9,8 @@ const zlib = require('zlib')
 const propParser = require("properties-file");
 const isPortReachable = require('is-port-reachable');
 const path = require('path')
+const { check, validationResult } = require('express-validator');
+const uuidv4 = require('uuid/v4')
 
 const {getOne,getDB,io,getDataDir} = require('../../modules/util')
 const {ObjectId} = require('mongodb');
@@ -23,8 +25,10 @@ procm.init(io)
     
 // })
 
+const SUPPORTED_TYPES = ['minecraft','sourcegame']
 const DEFAULT_PORTS = {minecraft: 25565, source: 27015}
 const ROOT_DIR = getDataDir();
+
 router.use('/:id/backups',require('./backups'))
 
 
@@ -56,7 +60,77 @@ router.get('/test/:type/:version',(req,res) => {
         res.json({exists:false})
     })
 })
-router.get('/test2/',(req,res) => {
+router.post('/create',[
+    check('id')
+        .optional().exists().custom(v => /^[A-Za-z0-9_-]+$/.test(v)).withMessage('ID must be contain alphanumeric characters'),
+    check('name')
+        .exists().withMessage('A name for the server is required')
+        .isString().withMessage('A name for the server must be a string')
+        .not().isEmpty().withMessage('A name for the server is required'),
+    check('type')
+        .exists().withMessage('The type of server is required')
+        .isString().withMessage('Invalid server type')
+        .custom((v,{req}) => SUPPORTED_TYPES.includes(v)).withMessage('Invalid server type'),
+    check('appid').if((v,{req}) => req.body.type === 'sourcegame')
+        .exists().withMessage('An appid is required for sourcegames')
+        .isString().withMessage('The appid needs to be a string')
+        .not().isEmpty().withMessage('An appid is required for sourcegames'),
+    check('mc.version').if(v => v.type === 'minecraft')
+        .exists().withMessage('A minecraft version is required for minecraft')
+        .isString().withMessage('A minecraft version must be a string')
+        .not().isEmpty().withMessage('A minecraft version is required for minecraft'),
+    check('mc.jar').if(v => v.type === "minecraft")
+        .exists().withMessage('A server type is required for minecraft')
+        .isString().withMessage('A server type for minecraft must be a string')
+        .not().isEmpty().withMessage('A server type is required for minecraft')
+],async(req,res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }else{
+        const id = req.body.id||uuidv4();
+        try {
+            await getDB().collection("servers").insertOne({
+                _id:id,
+                name:req.body.name.trim(),
+                type:req.body.type,
+                appid:req.body.appid||undefined,
+                mc:req.body.mc?{
+                    version:req.body.mc.version,
+                    jar:req.body.mc.jar,
+                    memory:"512"
+                }:undefined,
+                tags:[],
+                created:Date.now()
+            })
+            res.status(200).json({
+                success:true,
+                id
+            })
+        }catch(err) {
+            if(err.code == 11000) { //duplicate 
+                return res.status(409).json({
+                    error:"Server already exists",
+                    reason:"ServerAlreadyExists"
+                })
+            }
+            res.status(500).json({
+                resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
+            })
+            console.error('[Error]',req.path,err.message)
+        }
+    }
+    /*
+    id:this.id||UUID(),
+    name:this.title,
+    type:this.type,
+    appid:this.appid,
+    mc:{
+        version:this.version,
+        jar:this.jar,
+        memory:'512'
+    }
+    */
     
 })
 router.get('/:id',async(req,res) => {
@@ -178,6 +252,7 @@ router.get('/:id/config',async(req,res) => {
             if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
             try {
                 let final_object = {}
+                console.log(ROOT_DIR,server._id,'/server.properties')
                 if(server.type == "minecraft") {
                     const server_prop = await fs.readFile(path.join(ROOT_DIR,server._id.toString(),"/server.properties"),'utf-8');
                     final_object['server_properties'] = propParser.parse(server_prop)
