@@ -1,7 +1,7 @@
 
 if(!process.env.MONGODB_URI) throw 'Missing MONGODB_URI environmental variable. Please provide.'
 
-const MongoClient = require('mongodb').MongoClient;
+const {ObjectId,MongoClient} = require('mongodb');
 const {exec} = require('child_process')
 const fs = require('fs').promises
 const path = require('path')
@@ -57,5 +57,13 @@ function getDataDir() {
         return path.normalize(process.env.ROOT_SERVER_DIR)
     }
 }
-module.exports = {init, getOne, getDB, execShellCommand, io, getDataDir};
+function getId(input) {
+    try {
+        const id = new ObjectId(input)
+        return {$in: [input, id]}
+    }catch(ex) {
+        return input;
+    }
+}
+module.exports = {init, getOne, getDB, execShellCommand, io, getDataDir, getId};
 

@@ -12,7 +12,7 @@ const path = require('path')
 const { check, validationResult } = require('express-validator');
 const uuidv4 = require('uuid/v4')
 
-const {getOne,getDB,io,getDataDir} = require('../../modules/util')
+const {getOne,getDB,io,getDataDir,getId} = require('../../modules/util')
 const {ObjectId} = require('mongodb');
 const procm = require('../../modules/processManager');
 
@@ -88,7 +88,7 @@ router.post('/create',[
     if (!errors.isEmpty()) {
         return res.status(422).json({ errors: errors.array() });
     }else{
-        const id = req.body.id||uuidv4();
+        const id = req.body.id||new ObjectId();
         try {
             await getDB().collection("servers").insertOne({
                 _id:id,
@@ -134,22 +134,11 @@ router.post('/create',[
     
 })
 router.get('/:id',async(req,res) => {
-    try {
-        try {
-            _id = new ObjectId(req.params.id)
-            const arr = await getDB().collection("servers").find(_id).toArray();
-            res.json({
-                server: arr.length > 0 ? arr[0] : {}
-            })
-        }catch(ex) {
-            res.status(400).json({resource:req.path,error:"Invalid server id. Needs to be 12 string or 24 hex chars.",reason:"InvalidServerID"})
-        }
-    }catch(err) {
-        res.status(500).json({
-            resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
-        })
-        console.error('[Error]',req.path,err.message)
-    }
+    const id = getId(req.params.id);
+    const arr = await getDB().collection("servers").find({_id:id}).toArray();
+    if(arr.length == 0) return res.status(404).json({error:"Server not found",reason:'ServerNotFound'})
+    res.json(arr[0])
+
 })
 router.get('/:id/start',async(req,res) => {
     try {
@@ -252,7 +241,6 @@ router.get('/:id/config',async(req,res) => {
             if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
             try {
                 let final_object = {}
-                console.log(ROOT_DIR,server._id,'/server.properties')
                 if(server.type == "minecraft") {
                     const server_prop = await fs.readFile(path.join(ROOT_DIR,server._id.toString(),"/server.properties"),'utf-8');
                     final_object['server_properties'] = propParser.parse(server_prop)

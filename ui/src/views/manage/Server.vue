@@ -100,7 +100,7 @@ export default {
     fetchServer(id) {
       this.loading = true;
       Axios.get(`${this.$apiURL}/server/${id}`).then(r => {
-        this.server = r.data.server;
+        this.server = r.data;
         this.loading = false;
       }).catch(err => {
         this.loading = false;
