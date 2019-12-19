@@ -209,7 +209,7 @@ export default {
     }
 }
 function areArraysEqual(arr1,arr2) {
-    console.log(arr1.length,arr2.length) //eslint-disable-line no-console
+    if(!arr1) return false;
     if(arr1.length != arr2.length) return false;
     for(let i=0;i<arr1.length;i++) {
         if(arr1[i] !== arr2[i]) {
