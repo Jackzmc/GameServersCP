@@ -18,12 +18,6 @@ const procm = require('../../modules/processManager');
 
 procm.init(io)
 
-// router.get('/:server/start',(req,res) => {
-
-// })
-// router.get('/:server/stop',(req,res) => {
-    
-// })
 
 const SUPPORTED_TYPES = ['minecraft','sourcegame']
 const DEFAULT_PORTS = {minecraft: 25565, source: 27015}
@@ -103,6 +97,9 @@ router.post('/create',[
                 tags:[],
                 created:Date.now()
             })
+            if(req.body.type === "sourcegame") {
+                fileManager.updateAppId({_id:id,type:req.body.type,appid:req.body.appid})
+            }
             res.status(200).json({
                 success:true,
                 id
@@ -149,7 +146,7 @@ router.get('/:id',async(req,res) => {
     const id = getId(req.params.id);
     const arr = await getDB().collection("servers").find({_id:id}).toArray();
     if(arr.length == 0) return res.status(404).json({error:"Server not found",reason:'ServerNotFound'})
-    res.json(arr[0])
+    res.json(Object.assign(arr[0],{status:'up'}))
 
 })
 router.get('/:id/start',async(req,res) => {
