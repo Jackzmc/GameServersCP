@@ -1,8 +1,6 @@
 {
   "name": "gameservercp",
   "version": "1.0.0",
-  "description": "**NOTE**: In development",
-  "main": "index.js",
   "scripts": {
     "start": "npm --prefix ui install && npm run --prefix ui build && npm --prefix api install && node api/index.js",
     "dev": "npm --prefix ui install && npm run --prefix ui serve && npm --prefix api install && node api/index.js"
@@ -11,8 +9,8 @@
     "type": "git",
     "url": "git+https://github.com/Jackzmc/GameServersCP.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "jackzmc",
+  "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/Jackzmc/GameServersCP/issues"
   },
