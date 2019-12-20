@@ -6,6 +6,11 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 app.io = io;
 
+if(!process.env.STEAMCMD_PATH) {
+    console.error("MISSING 'STEAMCMD_PATH' environment variable. Please provide path of steamcmd executable. https://developer.valvesoftware.com/wiki/SteamCMD for more information")
+    process.exit(1)
+}
+
 require('./modules/fileManager').start();
 require('./modules/util').init(server,io);
 
