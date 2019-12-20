@@ -1,6 +1,7 @@
 const {spawn} = require('child_process')
 const path = require('path')
 
+const {getServerDir} = require('./util')
 const fileManager = require('./fileManager')
 const servers = new Map();
 let io;
@@ -55,6 +56,7 @@ function sendCommand(serverName,command) {
 
 }
 
+
 function startServer(server) {
     return new Promise(async(resolve,reject) => {
         console.debug(`[debug] run ${server.type}`,`"/${server._id}"`,server.mc)
@@ -80,12 +82,12 @@ function startServer(server) {
             if(!starter) return console.debug('[proc] Starter is null, skipping'); //if starter ignore, silent (rejected above)
             console.log("[debug] spawn: ",starter,args)
             try {
-                const _path = path.join(getDataDir(),server._id)
+                const _path = path.join(getServerDir(),server._id)
                 const process = spawn(starter,args,{cwd:_path,detached:true});
 
                 process.on('close',(code,signal) => {
                     console.log('[proc]','Server',server._id,'closed. Code:',code,' Signal:',signal)
-                    io.to(server._id).emit('out','[NOTICE] Server has been stopped.')
+                    io.to(server._id).emit('out','[NOTICE] Server has been stopped.\n')
                     servers.delete(server._id)
                 })
                 process.on('error',(err) => {
@@ -112,6 +114,51 @@ function startServer(server) {
     })
 }
 
+let updating_servers = [];
+function updateAppId(server) {
+    return new Promise((resolve,reject) => {
+        const _path = path.join(getServerDir(),server._id.toString());
+        const steamcmd = `"${path.join(process.env.STEAMCMD_PATH,(process.platform === "win32") ? 'steamcmd.exe' : 'steamcmd.sh')}"`
+        if(!server.appid || server.type != "sourcegame") reject(new Error('Server is missing appid or is not a sourcegame'))
+        if(updating_servers.includes(server._id)) {
+            reject(new Error('Server is already updating'))
+        }
+        const proc = spawn(steamcmd,[
+            '+login','anonymous','+force_install_dir',`"${_path}"`,'+app_update',server.appid.toString(),'validate','+quit'
+        ],{cwd:_path,shell:true})
+        updating_servers.push(server._id)
+        proc.on('close',(code,signal)  => {
+            const index = updating_servers.findIndex(v => v === server._id);
+            updating_servers.splice(index,1);
+            if(code === 0) {
+                io.to(server._id).emit('out','[NOTICE] Server app update has been completed.\n')
+                resolve();
+            }else{
+                reject(signal||code)
+            }
+        })
+        proc.on('exit',(code,signal)  => {
+            if(code !== 0) {
+                const index = updating_servers.findIndex(v => v === server._id);
+                updating_servers.splice(index,1);
+                reject(signal||code)
+            }
+        })
+        proc.on('error',(err) => {
+            const index = updating_servers.findIndex(v => v === server._id);
+            updating_servers.splice(index,1);
+            reject(err)
+        })
+        proc.stdout.on('data',data => {
+            io.to(server._id).emit('out',data.toString())
+        })
+        process.stderr.on('data', (data) => {
+            io.to(server._id).emit('err',data.toString())
+        })
+    })
+    /* steamcmd.sh|steamcmd.exe +login anonymous +force_install_dir <dir> +app_update ${appid} validate +quit */
+}
+
 // function startServer(name,startScript) {
 //     const proc = spawn('java', [
 //         '-Xmx512M',
@@ -130,4 +177,4 @@ function startServer(server) {
 //     servers.set(name,proc);
 // }
 
-module.exports = {sendCommand, startServer, init};
+module.exports = {sendCommand, startServer, updateAppId, init};

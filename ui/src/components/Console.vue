@@ -15,6 +15,7 @@
         <div class="buttons">
             <b-button type="is-success" @click="startServer" :disabled="server.status != 'down'">Start</b-button>
             <b-button type="is-danger"  @click="stopServer" :disabled="server.status != 'up'">Stop</b-button>
+            <b-button type="is-warning"  @click="updateServer" :disabled="server.status != 'up'">Update</b-button>
         </div>
     </div>
 </div>
@@ -75,6 +76,20 @@ export default {
             }).catch((err) => {
                 this.$buefy.toast.open({
                     message:'Failed to start server: ' + err.message,
+                    type:'is-danger'
+                })
+            })
+        },
+        updateServer() {
+            Axios.get(`${this.$apiURL}/server/${this.server._id}/update`,() => {
+                this.$buefy.toast.open({
+                    message:'Successfully updated server',
+                    type:'is-success'
+                })
+            }).catch((err) => {
+                const msg = (err.response  && err.response.data.error) ? err.response.data.error : ''
+                this.$buefy.toast.open({
+                    message:'Failed to update server.'+msg,
                     type:'is-danger'
                 })
             })

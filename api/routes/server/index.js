@@ -12,7 +12,7 @@ const path = require('path')
 const { check, validationResult } = require('express-validator');
 const uuidv4 = require('uuid/v4')
 
-const {getOne,getDB,io,getDataDir,getId} = require('../../modules/util')
+const {getOne,getDB,io,getServerDir,getId} = require('../../modules/util')
 const {ObjectId} = require('mongodb');
 const procm = require('../../modules/processManager');
 
@@ -27,7 +27,7 @@ procm.init(io)
 
 const SUPPORTED_TYPES = ['minecraft','sourcegame']
 const DEFAULT_PORTS = {minecraft: 25565, source: 27015}
-const ROOT_DIR = getDataDir();
+const ROOT_DIR = getServerDir();
 
 router.use('/:id/backups',require('./backups'))
 
@@ -132,6 +132,18 @@ router.post('/create',[
     }
     */
     
+})
+router.get('/:id/update',async(req,res) => {
+    const id = getId(req.params.id);
+    const arr = await getDB().collection("servers").find({_id:id}).toArray();
+    if(arr.length == 0) return res.status(404).json({error:"Server not found",reason:'ServerNotFound'})
+    if(arr[0].type === "sourcegame") {
+        procm.updateAppId(arr[0])
+        .then(r => res.send('success'))
+        .catch(err => res.status(500).json({error:err.message}))
+    }else{
+        res.send('invalid type')
+    }
 })
 router.get('/:id',async(req,res) => {
     const id = getId(req.params.id);
