@@ -43,7 +43,7 @@ function getDB() {
     return _db;
 }
 
-function getDataDir() {
+function getServerDir() {
     if(!process.env.ROOT_SERVER_DIR) {
         const _path = path.join(__dirname,'../../servers');
         fs.mkdir(_path)
@@ -65,5 +65,5 @@ function getId(input) {
         return input;
     }
 }
-module.exports = {init, getOne, getDB, execShellCommand, io, getDataDir, getId};
+module.exports = {init, getOne, getDB, execShellCommand, io, getServerDir, getId};
 

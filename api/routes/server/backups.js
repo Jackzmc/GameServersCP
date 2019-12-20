@@ -5,10 +5,10 @@ const fsl = require('fs')
 const unzip = require('unzipper');
 module.exports = router;
 
-const {getOne,getDB,getDataDir,getId} = require('../../modules/util')
+const {getOne,getDB,getServerDir,getId} = require('../../modules/util')
 const {ObjectId} = require('mongodb');
 
-const ROOT_DIR = getDataDir();
+const ROOT_DIR = getServerDir();
 
 
 router.get('/',async(req,res) => {
