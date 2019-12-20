@@ -1,5 +1,7 @@
 const {spawn} = require('child_process')
+const propParser = require("properties-file");
 const path = require('path')
+const fs = require('fs').promises
 
 const {getServerDir} = require('./util')
 const fileManager = require('./fileManager')
@@ -31,6 +33,10 @@ function init(_io) {
         })
     })
     
+}
+
+function isServerRunning(server) {
+    return servers.has(server._id)
 }
 
 function getLastID(obj) {
@@ -177,4 +183,26 @@ function updateAppId(server) {
 //     servers.set(name,proc);
 // }
 
-module.exports = {sendCommand, startServer, updateAppId, init};
+function getConnectDetails(server) {
+    return new Promise((resolve,reject) => {
+        switch(server.type) {
+            case "minecraft":
+                fs.readFile(path.join(getServerDir(),server._id.toString(),"/server.properties"),'utf-8').then(server_prop => {
+                    const properties = propParser.parse(server_prop)
+                    return resolve({
+                        ip:properties['server-ip']||'0.0.0.0',
+                        port:properties['server-port']||25565
+                    })
+                }).catch(() => reject(err))
+                break;
+            case "sourcegame":
+                return resolve({
+                    ip:'0.0.0.0',
+                    port:'27015'
+                })
+        }
+    })
+    
+}
+
+module.exports = {sendCommand, startServer, updateAppId, init, getConnectDetails, isServerRunning};

@@ -146,7 +146,9 @@ router.get('/:id',async(req,res) => {
     const id = getId(req.params.id);
     const arr = await getDB().collection("servers").find({_id:id}).toArray();
     if(arr.length == 0) return res.status(404).json({error:"Server not found",reason:'ServerNotFound'})
-    res.json(Object.assign(arr[0],{status:'up'}))
+    const {ip,port} = await procm.getConnectDetails(arr[0]);
+    const status = procm.isServerRunning(arr[0]) ? "up" : "down"
+    res.json(Object.assign(arr[0],{ip,port,status}))
 
 })
 router.get('/:id/start',async(req,res) => {
@@ -241,12 +243,20 @@ router.get('/:id/config',async(req,res) => {
             if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
             try {
                 let final_object = {}
-                if(server.type == "minecraft") {
-                    fs.readFile(path.join(ROOT_DIR,server._id.toString(),"/server.properties"),'utf-8').then(server_prop => {
-                        final_object['server_properties'] = propParser.parse(server_prop)
-                    }).catch(() => {})
+                if(server.type === "minecraft") {
+                    Promise.all([
+                        fs.readFile(path.join(ROOT_DIR,server._id.toString(),"/server.properties"),'utf-8')
+                    ]).then(r => {
+                        final_object["server_properties"] = propParser.parse(r[0])
+                    }).then(() => {
+                        res.json(final_object)
+                    })
+                   .catch((err) => {
+                        res.status(500).json({
+                            resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
+                        })
+                   })
                 }
-                res.json(final_object)
             }catch(exc) {
                 res.status(500).json({
                     resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
@@ -273,7 +283,7 @@ router.get('/:id/logs',async(req,res) => {
                 const files = await fs.readdir(_path);
                 const logs = [];
                 for(const v in files) {
-                    const info = await fs.stat(path.join(ROOT_DIR,server._id,"/logs/",files[v]))
+                    const info = await fs.stat(path.join(ROOT_DIR,server._id.toString(),"/logs/",files[v]))
                     if(info.isFile()) {
                         logs.push({
                             name:files[v],
