@@ -15,7 +15,7 @@
         <div class="buttons">
             <b-button type="is-success" @click="startServer" :disabled="server.status != 'down'">Start</b-button>
             <b-button type="is-danger"  @click="stopServer" :disabled="server.status != 'up'">Stop</b-button>
-            <b-button type="is-warning"  @click="updateServer" :disabled="server.status != 'up'">Update</b-button>
+            <b-button type="is-warning"  @click="updateServer" :disabled="server.status != 'down'">Update</b-button>
         </div>
     </div>
 </div>

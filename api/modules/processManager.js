@@ -71,7 +71,8 @@ function startServer(server) {
             let args = [];
             switch(server.type) {
                 case "sourcegame":
-                    starter = server.starter||'./srcds_run'
+                    const default_process = (process.platform === "win32") ? "srcds.exe" : "./srcds_run"
+                    starter = server.starter||default_process
                     break;
                 case "minecraft":
                     try {
@@ -89,11 +90,13 @@ function startServer(server) {
             console.log("[debug] spawn: ",starter,args)
             try {
                 const _path = path.join(getServerDir(),server._id)
-                const process = spawn(starter,args,{cwd:_path,detached:true});
+                console.log('[debug]',_path)
+                const process = spawn(starter,args,{cwd:_path,shell:true});
 
                 process.on('close',(code,signal) => {
                     console.log('[proc]','Server',server._id,'closed. Code:',code,' Signal:',signal)
-                    io.to(server._id).emit('out','[NOTICE] Server has been stopped.\n')
+                    const reason = (code) ? `code ${code}` : `signal ${signal}`
+                    io.to(server._id).emit('out',`[NOTICE] Server has been stopped with ${reason}\n`)
                     servers.delete(server._id)
                 })
                 process.on('error',(err) => {
