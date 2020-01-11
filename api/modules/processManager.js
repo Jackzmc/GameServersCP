@@ -72,6 +72,7 @@ function startServer(server) {
             switch(server.type) {
                 case "sourcegame":
                     const default_process = (process.platform === "win32") ? "srcds.exe" : "./srcds_run"
+                    args = ['-console'];
                     starter = server.starter||default_process
                     break;
                 case "minecraft":
