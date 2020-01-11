@@ -89,7 +89,7 @@ export default {
             }).catch((err) => {
                 const msg = (err.response  && err.response.data.error) ? err.response.data.error : ''
                 this.$buefy.toast.open({
-                    message:'Failed to update server.'+msg,
+                    message:'Failed to update server. '+msg,
                     type:'is-danger'
                 })
             })
