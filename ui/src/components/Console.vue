@@ -2,7 +2,7 @@
 <div id="app">
     <h6 class="title is-6">Console</h6>
     <b-field>
-        <b-input type="textarea" :loading="console_loading" readonly v-model="console" expanded custom-class="console"></b-input>
+        <b-input type="textarea" :loading="console_loading" readonly v-model="console" expanded custom-class="console" ref="console"></b-input>
     </b-field>
     <b-field>
         <b-input :disabled="!socket.connected" placeholder="Enter a command here" icon="caret-right" v-model="input" expanded @keyup.enter.native="sendCommand" />
@@ -144,11 +144,19 @@ export default {
         socket.on('disconnect',() => {
             this.socket.connected = false;
         })
+        const consoleRef = this.$refs['console'].$refs.textarea;
         socket.on('out',(m) => {
             this.console += (m)
+            this.$nextTick(() => {
+                consoleRef.scrollTop =  consoleRef.scrollHeight;
+            });
+            
         })
         socket.on('err',m => {
             this.console += ("[ERROR] "+m)
+            this.$nextTick(() => {
+                consoleRef.scrollTop =  consoleRef.scrollHeight;
+            });
         })
     }
 }
