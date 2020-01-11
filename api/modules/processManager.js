@@ -89,7 +89,7 @@ function startServer(server) {
             if(!starter) return console.debug('[proc] Starter is null, skipping'); //if starter ignore, silent (rejected above)
             console.log("[debug] spawn: ",starter,args)
             try {
-                const _path = path.join(getServerDir(),server._id)
+                const _path = path.join(getServerDir(),server._id.toString())
                 console.log('[debug]',_path)
                 const process = spawn(starter,args,{cwd:_path,shell:true});
 
@@ -125,18 +125,31 @@ function startServer(server) {
 
 let updating_servers = [];
 function updateAppId(server) {
-    return new Promise((resolve,reject) => {
+    return new Promise(async(resolve,reject) => {
         const _path = path.join(getServerDir(),server._id.toString());
         const steamcmd = `"${path.join(process.env.STEAMCMD_PATH,(process.platform === "win32") ? 'steamcmd.exe' : 'steamcmd.sh')}"`
-        if(!server.appid || server.type != "sourcegame") reject(new Error('Server is missing appid or is not a sourcegame'))
+        if(!server.appid || server.type != "sourcegame") return reject(new Error('Server is missing appid or is not a sourcegame'))
         if(updating_servers.includes(server._id)) {
-            reject(new Error('Server is already updating'))
+            return reject(new Error('Server is already updating'))
         }
+        //make sure folder struc exists, silence err
+        await fs.mkdir(_path,{recursive:true})
+        .catch(() => {
+
+        })
+
+        //spawn steamcmd proc w/ args to login anon, set install dir, and feed appid.
         const proc = spawn(steamcmd,[
-            '+login','anonymous','+force_install_dir',`"${_path}"`,'+app_update',server.appid.toString(),'validate','+quit'
+            '+login','anonymous','+force_install_dir',`"${_path}"`,'+app_update',server.appid.toString().trim(),'validate','+quit'
         ],{cwd:_path,shell:true})
+        console.info(`Updating server appid ${server.appid}. cwd: ${_path}`)
+
+        //store server in list of servers that are updating. don't want duplicate updates
         updating_servers.push(server._id)
+
+        //either on close or full exit
         proc.on('close',(code,signal)  => {
+             //remove id of server from list of updating servers
             const index = updating_servers.findIndex(v => v === server._id);
             updating_servers.splice(index,1);
             if(code === 0) {
@@ -148,16 +161,20 @@ function updateAppId(server) {
         })
         proc.on('exit',(code,signal)  => {
             if(code !== 0) {
+                 //remove id of server from list of updating servers
                 const index = updating_servers.findIndex(v => v === server._id);
                 updating_servers.splice(index,1);
                 reject(signal||code)
             }
         })
+
         proc.on('error',(err) => {
+            //remove id of server from list of updating servers
             const index = updating_servers.findIndex(v => v === server._id);
             updating_servers.splice(index,1);
             reject(err)
         })
+        //send the update process data to console socket
         proc.stdout.on('data',data => {
             io.to(server._id).emit('out',data.toString())
         })
@@ -199,6 +216,7 @@ function getConnectDetails(server) {
                 }).catch(() => reject(err))
                 break;
             case "sourcegame":
+                //not implemented
                 return resolve({
                     ip:'0.0.0.0',
                     port:'27015'
