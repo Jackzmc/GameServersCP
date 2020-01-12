@@ -10,9 +10,8 @@ const propParser = require("properties-file");
 const isPortReachable = require('is-port-reachable');
 const path = require('path')
 const { check, validationResult } = require('express-validator');
-const uuidv4 = require('uuid/v4')
 
-const {getOne,getDB,io,getServerDir,getId} = require('../../modules/util')
+const { findAvailablePort,getDB,io,getServerDir,getId} = require('../../modules/util')
 const {ObjectId} = require('mongodb');
 const procm = require('../../modules/processManager');
 
@@ -56,7 +55,7 @@ router.get('/test/:type/:version',(req,res) => {
 })
 router.post('/create',[
     check('id')
-        .optional().exists().custom(v => /^[A-Za-z0-9_-]+$/.test(v)).withMessage('ID must be contain alphanumeric characters'),
+        .optional().exists().withMessage('ID must be contain alphanumeric characters'),
     check('name')
         .exists().withMessage('A name for the server is required')
         .isString().withMessage('A name for the server must be a string')
@@ -64,7 +63,7 @@ router.post('/create',[
     check('type')
         .exists().withMessage('The type of server is required')
         .isString().withMessage('Invalid server type')
-        .custom((v,{req}) => SUPPORTED_TYPES.includes(v)).withMessage('Invalid server type'),
+        .custom(v => SUPPORTED_TYPES.includes(v)).withMessage('Invalid server type'),
     check('appid').if((v,{req}) => req.body.type === 'sourcegame')
         .exists().withMessage('An appid is required for sourcegames')
         .isString().withMessage('The appid needs to be a string')
@@ -84,6 +83,30 @@ router.post('/create',[
     }else{
         const id = req.body.id||new ObjectId();
         try {
+
+            let port = await findAvailablePort(req.body.type)
+            if(req.query.debug) {
+                return res.json({
+                    success:true,
+                    id,
+                    server: {
+                        _id:id,
+                        name:req.body.name.trim(),
+                        type:req.body.type,
+                        appid:req.body.appid||undefined,
+                        mc:req.body.mc?{
+                            version:req.body.mc.version,
+                            jar:req.body.mc.jar,
+                            memory:"512"
+                        }:undefined,
+                        ip:'0.0.0.0',
+                        port,
+                        tags:[],
+                        created:Date.now()
+                    }
+                })
+            }
+
             await getDB().collection("servers").insertOne({
                 _id:id,
                 name:req.body.name.trim(),
@@ -94,6 +117,8 @@ router.post('/create',[
                     jar:req.body.mc.jar,
                     memory:"512"
                 }:undefined,
+                ip:'0.0.0.0',
+                port,
                 tags:[],
                 created:Date.now()
             })
