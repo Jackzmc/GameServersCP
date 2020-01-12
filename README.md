@@ -1,12 +1,14 @@
 # gameservercp
 
-**NOTE**: In development, see [trello page here](https://trello.com/b/YBirckVh/gameservercp). 
+**NOTE**: In development, see [trello page here](https://trello.com/b/YBirckVh/gameservercp).
 Support would be appreciated, feel free to ask what needs to be done.
 
 A control panel to allow others to manage game servers, including Minecraft and select steam games (using steamcmd).
 
 
 ## Project setup
+Requires nodejs 10.x or above
+
 This project is split into api and ui directories. You need to build the UI part, or serve it with nginx.
 You can run `npm run build` to build the UI & serve it w/ the api server, or run the UI dev server and run api server with:
 `npm run dev`
@@ -26,6 +28,6 @@ It may also create a data folder, which can possibly in the future auto manage s
 
 ### How to Contribute
 
-1.    Clone repo and create a new branch: $ git checkout https://github.com/jackzmc/gameservercp -b name_for_new_branch.
-2.    Make changes and test
-3.    Submit Pull Request with comprehensive description of changes
+1. Clone repo and create a new branch: $ git checkout https://github.com/jackzmc/gameservercp -b name_for_new_branch.
+2. Make changes and test
+3. Submit Pull Request with comprehensive description of changes
