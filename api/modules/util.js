@@ -65,5 +65,39 @@ function getId(input) {
         return input;
     }
 }
-module.exports = {init, getOne, getDB, execShellCommand, io, getServerDir, getId};
+function findAvailablePort(type, port = null) {
+    return new Promise((resolve,reject) => {
+        //get default port from env
+        if(!port) {
+            if(process.env.START_PORTS) {
+                port = process.env.START_PORTS
+            }else{
+                if(type === 'minecraft') {
+                    port = process.env.START_MINECRAFT_PORTS||25565;
+                }else if(type === 'sourcegame') {
+                    port = process.env.START_SOURCE_PORTS||27015
+                }else{
+                    return reject(new Error('Unknown gametype.'))
+                }
+            }
+            console.debug('Finding port: ', port)
+        }else{
+            //add one to port
+            if(isNaN(port)) return reject(new Error('Port is not valid'))
+            port = parseInt(port) + 1;
+        }
+        //test if available
+        _db.collection("servers").findOne({port:port.toString()},{project:{_id:0,port:1}}).then((r) => {
+            if(r != null) {
+                resolve(findAvailablePort(type,port))
+            }else{
+                resolve(port)
+            }
+        }).catch(err => {
+            reject(err)
+        }) 
+    })
+    
+}
+module.exports = {init, getOne, getDB, execShellCommand, io, getServerDir, getId,  findAvailablePort};
 
