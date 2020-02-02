@@ -237,7 +237,16 @@
       "linux": true
     },
     {
+      "name": "Half-Life 2: Deathmatch Dedicated Server",
+      "gamedir": "hl2mp",
+      "appid": "232370",
+      "anonymous": true,
+      "windows": true,
+      "linux": true
+    },
+    {
       "name": "Half-Life Dedicated Server",
+      "gamedir": "halflife",
       "appid": "90",
       "anonymous": true,
       "windows": true,
@@ -303,6 +312,7 @@
     },
     {
       "name": "Left 4 Dead 2 Dedicated Server",
+      "gamedir": "left4dead2",
       "appid": "222860",
       "anonymous": true,
       "windows": true,
@@ -310,6 +320,7 @@
     },
     {
       "name": "Left 4 Dead Dedicated Server",
+      "gamedir": "left4dead",
       "appid": "222840",
       "anonymous": true,
       "windows": true,
@@ -481,6 +492,7 @@
     },
     {
       "name": "Synergy Dedicated Server",
+      "gamedir": "synergy",
       "appid": "17525",
       "anonymous": true,
       "windows": true
@@ -520,6 +532,7 @@
       "name": "Unturned Dedicated Server",
       "appid": "304930",
       "anonymous": null,
+      "windows": true,
       "linux": true
     },
     {
@@ -530,10 +543,11 @@
       "linux": true
     },
     {
-        "name": "Double Action: Boogaloo Dedicated Server",
-        "appid": "317800",
-        "anonymous": true,
-        "windows": true,
-        "linux": true
+      "name": "Double Action: Boogaloo Dedicated Server",
+      "appid": "317800",
+      "gamedir": "dab",
+      "anonymous": true,
+      "windows": true,
+      "linux": true
     }
 ]

@@ -1,6 +1,7 @@
 
 if(!process.env.MONGODB_URI) throw 'Missing MONGODB_URI environmental variable. Please provide.'
 
+const appids = require('./appids.json');
 const {ObjectId,MongoClient} = require('mongodb');
 const {exec} = require('child_process')
 const fs = require('fs').promises
@@ -41,6 +42,9 @@ async function getOne(cursor) {
 
 function getDB() {
     return _db;
+}
+function getGameDir(appid) {
+    return appids.find(v => v.appid == appid).gamedir||null;
 }
 
 function getServerDir() {
@@ -99,5 +103,11 @@ function findAvailablePort(type, port = null) {
     })
     
 }
-module.exports = {init, getOne, getDB, execShellCommand, io, getServerDir, getId,  findAvailablePort};
+function fromEntries(array) {
+    return array.reduce((prev,curr) => {
+        prev[curr[0]] = curr[1] ;
+        return prev;
+    },{})
+}
+module.exports = {init, getOne, getDB, execShellCommand, io, getServerDir, getId,  findAvailablePort, getGameDir, fromEntries};
 

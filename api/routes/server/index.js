@@ -11,7 +11,7 @@ const isPortReachable = require('is-port-reachable');
 const path = require('path')
 const { check, validationResult } = require('express-validator');
 
-const { findAvailablePort,getDB,io,getServerDir,getId} = require('../../modules/util')
+const { findAvailablePort,getDB,io,getServerDir,getId, getGameDir, fromEntries} = require('../../modules/util')
 const {ObjectId} = require('mongodb');
 const procm = require('../../modules/processManager');
 
@@ -267,8 +267,8 @@ router.get('/:id/config',async(req,res) => {
             const server = arr.length > 0 ? arr[0] : {};
             if(!server) return res.status(404).json({resource:req.path,reason:"NotFound"})
             try {
-                let final_object = {}
                 if(server.type === "minecraft") {
+                    let final_object = {}
                     Promise.all([
                         fs.readFile(path.join(ROOT_DIR,server._id.toString(),"/server.properties"),'utf-8')
                     ]).then(r => {
@@ -277,6 +277,34 @@ router.get('/:id/config',async(req,res) => {
                         res.json(final_object)
                     })
                    .catch((err) => {
+                        res.status(500).json({
+                            resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
+                        })
+                   })
+                }else if(server.type === 'sourcegame') {
+                    const gamedirname = getGameDir(server.appid)
+                    const _path = path.join(ROOT_DIR,server._id.toString(),gamedirname,'cfg');
+                    fs.readdir(_path).then((files) => {
+                        const promiseArray = [];
+                        files.forEach(file => {
+                            if(!file.endsWith('.cfg')) return; //ignore non-config files
+                            //loop all files, push a promise into promise array to read each txt/cfg file
+                            promiseArray.push(new Promise((resolve,reject) => {
+                                fs.readFile(path.join(_path,file),'utf-8')
+                                .then(text => resolve([file,text]))
+                                .catch(err => {
+                                    (err.code === 'EISDIR') ? resolve([file,null]) : reject(err)
+                                })
+                            }))
+                        })
+                        Promise.all(promiseArray).then(texts => {
+                            //texts returns: [[file,contents], [file2,contents]]
+                            return res.json(fromEntries(texts))
+                            //return: {file:contents,file2:contents}
+                        })
+                    })
+                    .catch((err) => {
+                        console.error('[/server/:server/config]', err.message)
                         res.status(500).json({
                             resource:req.path,error:"500 Internal Server Error",reason:"InternalServerError"
                         })
@@ -390,7 +418,6 @@ router.delete('/:id/logs/:log',async(req,res) => {
         console.error('[Error]',req.path,err.message)
     }
 })
-
 
 /*procm.startServer("test",null)
 
