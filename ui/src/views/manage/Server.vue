@@ -5,7 +5,7 @@
       <div class="box">
         <div class="is-inline">
           <b-button tag="router-link" to="/manage" type="is-pulled-left is-rounded"><font-awesome-icon icon="long-arrow-alt-left" /> Back</b-button>
-          <b-button @click="info_shown = !info_shown" type="is-pulled-right is-rounded is-info"><font-awesome-icon icon="info" /> Info</b-button>
+          <b-button @click="showInfo" type="is-pulled-right is-rounded is-info"><font-awesome-icon icon="info" /> Info</b-button>
           <div class="has-text-centered ">
             <h1 class="title is-capitalized is-3" >{{server.name}}</h1>
             <h2 class="subtitle" v-if="server.ip&&server.port">{{server.ip||'localhost'}}:{{server.port||"25565"}}</h2>
@@ -27,13 +27,6 @@
           </b-taglist>
           
         </div>
-          <b-collapse :open="info_shown">
-            <hr>
-            <div class="has-text-centered">
-              <strong>Information</strong>
-            </div>
-            <strong>Created: </strong>{{server.created | formatDate}}
-          </b-collapse>
       </div>
 
       <div v-if="server._id" class="box has-text-centered">
@@ -77,19 +70,20 @@
 
 <script>
 import Axios from 'axios'
+import ServerInfo from '@/components/ServerInfo';
 export default {
   components: {
     'settings-manager': () => import("@/components/SettingsManager"),
     'logs-viewer': () => import("@/components/LogsViewer"),
     'backups-viewer': () => import("@/components/BackupsViewer"),
-    'console': () => import("@/components/Console")
+    'console': () => import("@/components/Console"),
+    ServerInfo
   },
   data() {
     return {
       server:{},
       loading:true,
       current:null,
-      info_shown:false
     }
   },
   computed: {
@@ -132,6 +126,15 @@ export default {
             ariaRole: 'alertdialog',
             ariaModal: true
         })
+      })
+    },
+    showInfo() {
+      this.$buefy.modal.open({
+          parent: this,
+          component: ServerInfo,
+          props:{server:this.server},
+          hasModalCard: false,
+          trapFocus: true
       })
     }
   }

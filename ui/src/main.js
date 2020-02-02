@@ -23,7 +23,7 @@ Vue.prototype.$socketURL = process.env.VUE_APP_SOCKET_URL;
 
 Vue.filter('formatDate', function(value) {
   if (value) {
-    return format(new Date(value),'yyyy/MM/dd [at] hh:mm')
+    return format(new Date(value),'yyyy/MM/dd [at] h:mm')
     //return moment(String(value)).format()
   }
 })
