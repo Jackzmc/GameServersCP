@@ -232,6 +232,15 @@
     {
       "name": "Half-Life Deathmatch: Source Dedicated server",
       "appid": "255470",
+      "gamedir": "hl1mp",
+      "anonymous": true,
+      "windows": true,
+      "linux": true
+    },
+    {
+      "name": "Garry's Mod Dedicated Server",
+      "appid": "4020",
+      "gamedir": "garrysmod",
       "anonymous": true,
       "windows": true,
       "linux": true
@@ -260,6 +269,7 @@
     },
     {
       "name": "Insurgency 2014 Dedicated Server",
+      "gamedir": "insurgency",
       "appid": "237410",
       "anonymous": true,
       "windows": true,
